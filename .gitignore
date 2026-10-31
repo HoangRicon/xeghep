@@ -15,6 +15,9 @@ Thumbs.db
 *.log
 npm-debug.log*
 
+# Upload runtime (Payload) — ảnh do CMS upload, giữ riêng trên từng máy/VPS
+media/
+
 # Temp/debug files
 .tmp-*
 

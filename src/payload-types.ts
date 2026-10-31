@@ -105,11 +105,13 @@ export interface Config {
     company_settings: CompanySetting;
     pricing_settings: PricingSetting;
     notification_settings: NotificationSetting;
+    custom_code: CustomCode;
   };
   globalsSelect: {
     company_settings: CompanySettingsSelect<false> | CompanySettingsSelect<true>;
     pricing_settings: PricingSettingsSelect<false> | PricingSettingsSelect<true>;
     notification_settings: NotificationSettingsSelect<false> | NotificationSettingsSelect<true>;
+    custom_code: CustomCodeSelect<false> | CustomCodeSelect<true>;
   };
   locale: null;
   widgets: {
@@ -507,11 +509,11 @@ export interface Article {
    */
   excerpt: string;
   /**
-   * HTML thô. Khi lưu hệ thống tự làm sạch theo allowlist và sinh contentHtml + mục lục.
+   * HTML thô. Khi lưu hệ thống tự làm sạch theo allowlist và sinh contentHtml + mục lục. Có thể chèn <style>...</style> trong nội dung để tạo CSS riêng cho bài — CSS được tách ra và tự giới hạn trong vùng nội dung, không ảnh hưởng phần còn lại của trang.
    */
   content: string;
   /**
-   * Sinh khi lưu qua sanitize-html + mục lục (T057).
+   * Sinh khi lưu qua sanitize-html + mục lục (T057). Khối <style>/<script> bị loại khỏi HTML này; <style> được lấy từ nội dung gốc và scope riêng khi hiển thị.
    */
   contentHtml?: string | null;
   /**
@@ -1486,6 +1488,29 @@ export interface NotificationSetting {
   createdAt?: string | null;
 }
 /**
+ * Chèn thẻ script/meta/CSS tùy chỉnh vào website. Chỉ dán mã từ nguồn tin cậy — mã chạy trực tiếp trên mọi trang công khai.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "custom_code".
+ */
+export interface CustomCode {
+  id: number;
+  /**
+   * Chèn vào <head> trước khi trang render (analytics, meta xác minh, CSS toàn site).
+   */
+  headCode?: string | null;
+  /**
+   * Chèn ngay sau thẻ <body> mở (Google Tag Manager noscript, chat widget, script cần chạy sớm).
+   */
+  bodyStartCode?: string | null;
+  /**
+   * Chèn trước thẻ </body> (pixel, script chạy cuối trang, mã theo dõi chuyển đổi).
+   */
+  bodyEndCode?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "company_settings_select".
  */
@@ -1632,6 +1657,18 @@ export interface NotificationSettingsSelect<T extends boolean = true> {
   telegramEnabled?: T;
   telegramBotToken?: T;
   telegramChatId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "custom_code_select".
+ */
+export interface CustomCodeSelect<T extends boolean = true> {
+  headCode?: T;
+  bodyStartCode?: T;
+  bodyEndCode?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

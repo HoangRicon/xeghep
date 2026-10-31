@@ -9,11 +9,13 @@ import {
   type Testimonial,
 } from "@/data/company-info";
 import { FALLBACK_ROUTES } from "@/data/fallback-routes";
+import { toMediaSrc } from "@/lib/brand";
 import type { RouteItem, RoutePriceDetail } from "@/lib/types";
 import {
   getRoutesDirect,
   getRouteDirect,
   getCompanySettingsDirect,
+  getCustomCodeDirect,
   getArticlesDirect,
   getArticleDirect,
   getSitemapEntriesDirect,
@@ -529,6 +531,18 @@ export type CompanySettingsData = {
   testimonials: Testimonial[];
 };
 
+export type CustomCodeData = {
+  headCode: string;
+  bodyStartCode: string;
+  bodyEndCode: string;
+};
+
+export const EMPTY_CUSTOM_CODE: CustomCodeData = {
+  headCode: "",
+  bodyStartCode: "",
+  bodyEndCode: "",
+};
+
 export const FALLBACK_COMPANY_SETTINGS: CompanySettingsData = {
   info: COMPANY_INFO,
   address: "Lê Chân, Hải Phòng, Việt Nam",
@@ -698,6 +712,13 @@ export async function getCompanySettings(): Promise<CompanySettingsData> {
   }
 }
 
+export async function getCustomCode(): Promise<CustomCodeData> {
+  if (typeof window === "undefined") {
+    return getCustomCodeDirect();
+  }
+  return EMPTY_CUSTOM_CODE;
+}
+
 export type VehiclePriceGroup = {
   sedan5Seats: number | null;
   suv7Seats: number | null;
@@ -776,6 +797,7 @@ export type ArticleTocItem = { id: string; text: string; level?: number };
 
 export type ArticleDetailOut = ArticleCardOut & {
   contentHtml: string;
+  customCss?: string;
   tableOfContents: ArticleTocItem[];
   authorType: string | null;
   relatedRoute: { slug: string; name: string; priceShare1Text: string } | null;
@@ -783,6 +805,7 @@ export type ArticleDetailOut = ArticleCardOut & {
 };
 
 export type ArticleDetail = Article & {
+  customCss: string;
   authorType: string | null;
   relatedRoute: { slug: string; name: string; priceShare1Text: string } | null;
   seo: RouteSeo;
@@ -812,7 +835,7 @@ function toArticle(card: ArticleCardOut): Article {
     excerpt: card.excerpt,
     content: "",
     tableOfContents: [],
-    image: card.featuredImage?.url ?? "",
+    image: toMediaSrc(card.featuredImage?.url) ?? "",
   };
 }
 
@@ -857,6 +880,7 @@ export async function getArticle(slug: string): Promise<ArticleDetail> {
   return {
     ...toArticle(data),
     content: data.contentHtml ?? "",
+    customCss: data.customCss ?? "",
     tableOfContents: data.tableOfContents ?? [],
     authorType: data.authorType ?? null,
     relatedRoute: data.relatedRoute ?? null,

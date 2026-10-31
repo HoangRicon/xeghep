@@ -17,6 +17,7 @@ import { Users } from "./collections/Users";
 import { CompanySettings } from "./globals/CompanySettings";
 import { PricingSettings } from "./globals/PricingSettings";
 import { NotificationSettings } from "./globals/NotificationSettings";
+import { CustomCode } from "./globals/CustomCode";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -62,6 +63,24 @@ export default buildConfig({
           INSERT INTO notification_settings (id, email_enabled, smtp_host, smtp_port, sender_name)
           SELECT 1, false, 'smtp.gmail.com', 587, 'Xe Ghép Liên Tỉnh — Tổng đài'
           WHERE NOT EXISTS (SELECT 1 FROM notification_settings WHERE id = 1);
+
+          CREATE TABLE IF NOT EXISTS custom_code (
+            id serial PRIMARY KEY,
+            head_code text,
+            body_start_code text,
+            body_end_code text,
+            updated_at timestamp(3) with time zone DEFAULT now(),
+            created_at timestamp(3) with time zone DEFAULT now()
+          );
+
+          ALTER TABLE custom_code
+            ADD COLUMN IF NOT EXISTS head_code text,
+            ADD COLUMN IF NOT EXISTS body_start_code text,
+            ADD COLUMN IF NOT EXISTS body_end_code text;
+
+          INSERT INTO custom_code (id)
+          SELECT 1
+          WHERE NOT EXISTS (SELECT 1 FROM custom_code WHERE id = 1);
         `);
       }
     } catch (err) {
@@ -109,7 +128,7 @@ export default buildConfig({
     AirportPricing,
     DistanceRates,
   ],
-  globals: [CompanySettings, PricingSettings, NotificationSettings],
+  globals: [CompanySettings, PricingSettings, NotificationSettings, CustomCode],
   cors: [
     "http://localhost:4000",
     "http://127.0.0.1:4000",

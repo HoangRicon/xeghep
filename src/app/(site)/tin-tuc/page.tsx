@@ -7,7 +7,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ARTICLES as FALLBACK_ARTICLES } from "@/data/articles";
 import { getArticles, getRoutes, getCompanySettings } from "@/lib/api";
 import { COMPANY_INFO } from "@/data/company-info";
-import { Calendar, User, ArrowRight, Tag, Phone, ShieldCheck } from "lucide-react";
+import { Calendar, User, ArrowRight, PhoneCall, MapPin } from "lucide-react";
 
 export const revalidate = 60;
 
@@ -28,6 +28,10 @@ function parsePage(value: string | string[] | undefined): number | null {
 
 function pageHref(page: number): string {
   return page === 1 ? "/tin-tuc" : `/tin-tuc?page=${page}`;
+}
+
+function formatDate(value: string): string {
+  return new Date(value).toLocaleDateString("vi-VN");
 }
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
@@ -77,245 +81,255 @@ export default async function NewsIndexPage({ searchParams }: Props) {
     <>
       <Breadcrumbs items={breadcrumbs} />
 
-      <div className="py-10 sm:py-16 bg-slate-50 min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          {/* Header & H1 per spec_v2.md Section 6 */}
-          <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-red-700 bg-red-100 px-3.5 py-1 rounded-full inline-block">
-              Bản Tin & Cẩm Nang
-            </span>
-            <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight uppercase">
+      <div className="bg-white pb-24">
+        <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+          <header className="border-b border-slate-200 pb-6">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-600">
+              Bản tin &amp; cẩm nang
+            </p>
+            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
               Tin tức
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600">
-              Kinh nghiệm đặt xe, bảng giá liên tỉnh mới nhất và thông tin hữu ích cho chuyến đi của quý khách.
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+              Kinh nghiệm đặt xe, bảng giá liên tỉnh mới nhất và thông tin hữu ích
+              cho chuyến đi của quý khách.
             </p>
-          </div>
+          </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Cột chính: Bài nổi bật & Lưới bài viết */}
-            <div className="lg:col-span-8 space-y-8">
-              {/* Bài nổi bật */}
-              {featuredArticle && (
-                <div className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
-                  {featuredArticle.image && (
-                    <Link
-                      href={`/tin-tuc/${featuredArticle.slug}`}
-                      className="block relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden bg-slate-100"
-                    >
-                      <Image
-                        src={featuredArticle.image}
-                        alt={featuredArticle.title}
-                        fill
-                        priority
-                        sizes="(max-width: 1024px) 100vw, 768px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </Link>
-                  )}
-                  <div className="p-6 sm:p-8 space-y-4">
-                    <div className="flex items-center gap-3 text-xs text-slate-500">
-                    <span className="inline-flex items-center gap-1 font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-md">
-                      <Tag className="w-3 h-3" />
-                      <span>{featuredArticle.categoryName}</span>
+          {featuredArticle && (
+            <section aria-labelledby="featured-heading" className="border-b border-slate-200 py-8">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                Bài nổi bật
+              </p>
+              <Link
+                href={`/tin-tuc/${featuredArticle.slug}`}
+                className="group mt-4 grid gap-6 lg:grid-cols-[1.1fr_1fr] lg:items-center"
+              >
+                {featuredArticle.image && (
+                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100">
+                    <Image
+                      src={featuredArticle.image}
+                      alt={featuredArticle.title}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 620px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                )}
+                <div>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                    <span className="font-bold uppercase tracking-wide text-red-600">
+                      {featuredArticle.categoryName}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5 text-red-600" aria-hidden="true" />
                       <time dateTime={featuredArticle.publishedAt}>
-                        {new Date(featuredArticle.publishedAt).toLocaleDateString("vi-VN")}
+                        {formatDate(featuredArticle.publishedAt)}
                       </time>
                     </span>
                   </div>
 
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 hover:text-red-600 transition-colors">
-                    <Link href={`/tin-tuc/${featuredArticle.slug}`}>
-                      {featuredArticle.title}
-                    </Link>
+                  <h2
+                    id="featured-heading"
+                    className="mt-2 text-xl font-black leading-tight text-slate-900 transition-colors group-hover:text-red-700 sm:text-2xl"
+                  >
+                    {featuredArticle.title}
                   </h2>
 
-                  <p className="text-sm text-slate-600 leading-relaxed">
+                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">
                     {featuredArticle.excerpt}
                   </p>
 
-                  <div className="pt-2 flex items-center justify-between">
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
-                      <User className="w-3.5 h-3.5" />
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-3 text-xs">
+                    <span className="flex items-center gap-1.5 text-slate-500">
+                      <User className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>{featuredArticle.author}</span>
                     </span>
-                    <Link
-                      href={`/tin-tuc/${featuredArticle.slug}`}
-                      className="font-bold text-xs text-red-600 hover:text-red-700 flex items-center gap-1"
-                    >
-                      <span>Đọc tiếp</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                    </div>
+                    <span className="flex items-center gap-1 font-bold text-red-600">
+                      Đọc bài viết
+                      <ArrowRight
+                        className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </span>
                   </div>
                 </div>
-              )}
+              </Link>
+            </section>
+          )}
 
-              {/* Lưới các bài viết khác */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-black text-slate-900 uppercase">
-                  Cẩm Nang & Bài Viết Mới Nhất
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {otherArticles.map((article) => (
-                    <article
-                      key={article.slug}
-                      className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-between group"
-                    >
-                      {article.image && (
-                        <Link
-                          href={`/tin-tuc/${article.slug}`}
-                          className="block relative aspect-[16/9] w-full overflow-hidden bg-slate-100"
-                        >
-                          <Image
-                            src={article.image}
-                            alt={article.title}
-                            fill
-                            sizes="(max-width: 640px) 100vw, 400px"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </Link>
-                      )}
-                      <div className="p-5 space-y-4 flex flex-col justify-between flex-grow">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-xs text-slate-500">
-                            <span className="font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded text-[11px]">
-                              {article.categoryName}
-                            </span>
-                            <span>{new Date(article.publishedAt).toLocaleDateString("vi-VN")}</span>
-                          </div>
-
-                          <h3 className="text-base font-bold text-slate-900 hover:text-red-600 transition-colors leading-snug">
-                            <Link href={`/tin-tuc/${article.slug}`}>
-                              {article.title}
-                            </Link>
-                          </h3>
-
-                          <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                            {article.excerpt}
-                          </p>
-                        </div>
-
-                        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                          <span className="text-slate-500 truncate pr-2">{article.author}</span>
-                          <Link
-                            href={`/tin-tuc/${article.slug}`}
-                            className="font-bold text-red-600 hover:text-red-700 flex items-center gap-1 whitespace-nowrap"
-                          >
-                            <span>Chi tiết</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </Link>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-
-              {totalPages > 1 && (
-                <nav aria-label="Phân trang tin tức" className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                  {page > 1 && (
-                    <Link href={pageHref(page - 1)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-red-300 hover:text-red-700">
-                      Trang trước
-                    </Link>
-                  )}
-                  {visiblePages.map((visiblePage, index) => (
-                    <div key={visiblePage} className="flex items-center gap-2">
-                      {index > 0 && visiblePage - visiblePages[index - 1] > 1 && (
-                        <span aria-hidden="true" className="px-1 text-slate-500">…</span>
-                      )}
-                      <Link
-                        href={pageHref(visiblePage)}
-                        aria-label={`Trang ${visiblePage}`}
-                        aria-current={visiblePage === page ? "page" : undefined}
-                        className={`flex min-w-10 items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold ${visiblePage === page ? "border-red-600 bg-red-600 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-red-300 hover:text-red-700"}`}
-                      >
-                        {visiblePage}
-                      </Link>
-                    </div>
-                  ))}
-                  {page < totalPages && (
-                    <Link href={pageHref(page + 1)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-red-300 hover:text-red-700">
-                      Trang sau
-                    </Link>
-                  )}
-                </nav>
-              )}
+          <section aria-labelledby="news-list-heading" className="pt-8">
+            <div className="flex items-end justify-between gap-4 border-b border-slate-200 pb-3">
+              <h2
+                id="news-list-heading"
+                className="text-lg font-black uppercase tracking-tight text-slate-900"
+              >
+                {page === 1 ? "Cẩm nang & bài viết mới nhất" : `Tin tức - Trang ${page}`}
+              </h2>
+              <span className="shrink-0 text-xs text-slate-500">
+                {articles.length} bài viết
+              </span>
             </div>
 
-            {/* Sidebar: Tuyến nổi bật & Hotline per spec_v2.md Section 6 */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Hotline card */}
-              <div className="relative overflow-hidden p-6 rounded-3xl bg-slate-950 text-white shadow-lg border border-red-500/30 group">
-                {/* Background image - clearly visible without heavy blur */}
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 pointer-events-none opacity-80"
-                  style={{
-                    backgroundImage: "url('/tongdai.webp')",
-                  }}
-                />
-                {/* Subtle dark gradient scrim ensuring text legibility */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-red-950/50 to-black/40 pointer-events-none" />
-
-                <div className="relative z-10 space-y-3">
-                  <h2 className="text-lg font-black uppercase drop-shadow-sm">
-                    Tổng Đài Đặt Xe 24/7
-                  </h2>
-                  <p className="text-xs text-red-100 leading-relaxed">
-                    Đón trả tận nhà, xe chạy liên tục cả ngày lẫn đêm. Gọi ngay để có xe trong 15-30 phút.
-                  </p>
-                  <div className="pt-2">
-                    <a
-                      href={info.hotlineHref}
-                      className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-white text-red-700 font-black text-sm shadow-md hover:bg-red-50 transition-colors"
-                    >
-                      <Phone className="w-4 h-4 animate-pulse" />
-                      <span>GỌI NGAY: {info.hotline}</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tuyến nổi bật */}
-              <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 space-y-4">
-                <h2 className="text-base font-black text-slate-900 uppercase flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-red-600" />
-                  <span>Tuyến Xe Ghép Nổi Bật</span>
-                </h2>
-
-                <ul className="space-y-2.5 text-xs">
-                  {routes.slice(0, 6).map((route) => (
-                    <li key={route.slug}>
-                      <Link
-                        href={`/tuyen-lien-tinh/${route.slug}`}
-                        className="flex items-center justify-between p-2 rounded-xl hover:bg-red-50 hover:text-red-700 transition-colors group"
-                      >
-                        <span className="font-semibold text-slate-700 group-hover:text-red-700 truncate pr-2">
-                          {route.name}
+            <div className="divide-y divide-slate-200">
+              {otherArticles.map((article) => (
+                <article key={article.slug}>
+                  <Link
+                    href={`/tin-tuc/${article.slug}`}
+                    className="group grid gap-4 py-6 sm:grid-cols-[1fr_200px] sm:items-start sm:gap-8"
+                  >
+                    <div className="order-2 sm:order-1">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                        <span className="font-bold uppercase tracking-wide text-red-600">
+                          {article.categoryName}
                         </span>
-                        <span className="font-bold text-red-600 whitespace-nowrap">
-                          {route.priceShare1Text}
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+                          <time dateTime={article.publishedAt}>
+                            {formatDate(article.publishedAt)}
+                          </time>
                         </span>
-                      </Link>
-                    </li>
-                  ))}
-                  <li className="pt-2 border-t border-slate-100">
+                      </div>
+
+                      <h3 className="mt-2 text-base font-bold leading-snug text-slate-900 transition-colors group-hover:text-red-700 sm:text-lg">
+                        {article.title}
+                      </h3>
+
+                      <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-slate-600">
+                        {article.excerpt}
+                      </p>
+
+                      <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+                        <span className="flex items-center gap-1.5">
+                          <User className="h-3.5 w-3.5" aria-hidden="true" />
+                          <span>{article.author}</span>
+                        </span>
+                        <span className="flex items-center gap-1 font-bold text-red-600">
+                          Đọc tiếp
+                          <ArrowRight
+                            className="h-3 w-3 transition-transform group-hover:translate-x-1"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
+                    </div>
+
+                    {article.image && (
+                      <div className="relative order-1 aspect-[16/10] w-full overflow-hidden rounded-lg bg-slate-100 sm:order-2">
+                        <Image
+                          src={article.image}
+                          alt={article.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 200px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                    )}
+                  </Link>
+                </article>
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <nav
+                aria-label="Phân trang tin tức"
+                className="flex flex-wrap items-center justify-center gap-2 pt-8"
+              >
+                {page > 1 && (
+                  <Link
+                    href={pageHref(page - 1)}
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-red-300 hover:text-red-700"
+                  >
+                    Trang trước
+                  </Link>
+                )}
+                {visiblePages.map((visiblePage, index) => (
+                  <div key={visiblePage} className="flex items-center gap-2">
+                    {index > 0 && visiblePage - visiblePages[index - 1] > 1 && (
+                      <span aria-hidden="true" className="px-1 text-slate-500">
+                        …
+                      </span>
+                    )}
                     <Link
-                      href="/tuyen-lien-tinh"
-                      className="text-xs font-bold text-red-600 hover:underline block text-center"
+                      href={pageHref(visiblePage)}
+                      aria-label={`Trang ${visiblePage}`}
+                      aria-current={visiblePage === page ? "page" : undefined}
+                      className={`flex min-w-10 items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold ${
+                        visiblePage === page
+                          ? "border-red-600 bg-red-600 text-white"
+                          : "border-slate-200 text-slate-700 hover:border-red-300 hover:text-red-700"
+                      }`}
                     >
-                      Xem tất cả các tuyến &rarr;
+                      {visiblePage}
+                    </Link>
+                  </div>
+                ))}
+                {page < totalPages && (
+                  <Link
+                    href={pageHref(page + 1)}
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-red-300 hover:text-red-700"
+                  >
+                    Trang sau
+                  </Link>
+                )}
+              </nav>
+            )}
+          </section>
+        </div>
+      </div>
+
+      <section className="border-t border-slate-800 bg-slate-900">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
+            <div>
+              <h2 className="text-xl font-black uppercase tracking-tight text-white">
+                Tổng đài đặt xe 24/7
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                Đón trả tận nhà, xe chạy liên tục cả ngày lẫn đêm. Gọi ngay để có
+                xe trong 15–30 phút.
+              </p>
+              <a
+                href={info.hotlineHref}
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-black text-white hover:bg-red-700"
+              >
+                <PhoneCall className="h-4 w-4 animate-pulse" aria-hidden="true" />
+                <span>Gọi ngay: {info.hotline}</span>
+              </a>
+            </div>
+
+            <div>
+              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-red-300">
+                <MapPin className="h-4 w-4" aria-hidden="true" />
+                <span>Tuyến xe ghép nổi bật</span>
+              </h2>
+              <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
+                {routes.slice(0, 6).map((route) => (
+                  <li key={route.slug}>
+                    <Link
+                      href={`/tuyen-lien-tinh/${route.slug}`}
+                      className="flex items-center justify-between gap-3 border-b border-white/10 py-2.5 text-sm text-slate-200 hover:text-white"
+                    >
+                      <span className="truncate">{route.name}</span>
+                      <span className="shrink-0 font-bold text-red-300">
+                        {route.priceShare1Text}
+                      </span>
                     </Link>
                   </li>
-                </ul>
-              </div>
+                ))}
+              </ul>
+              <Link
+                href="/tuyen-lien-tinh"
+                className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-white hover:text-red-300"
+              >
+                Xem tất cả các tuyến
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

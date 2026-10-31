@@ -30,8 +30,10 @@ import {
   type Testimonial,
 } from "@/data/company-info";
 import { FALLBACK_ROUTES } from "@/data/fallback-routes";
+import { toMediaSrc } from "@/lib/brand";
 import { ApiError } from "@/lib/api/client";
 import { collectSitemapData } from "@/lib/seo/sitemap";
+import { extractArticleCss } from "@/lib/seo/articleCss";
 import type {
   RouteItem,
   RouteDetail,
@@ -41,6 +43,7 @@ import type {
   CompanySettingsData,
   CompanyInfoData,
   CompanySettingsOut,
+  CustomCodeData,
   AirportPricingRow,
   DistancePricing,
   PricingSettings,
@@ -284,7 +287,7 @@ export function toArticle(card: ArticleCardOut): FallbackArticle {
     excerpt: card.excerpt,
     content: "",
     tableOfContents: [],
-    image: card.featuredImage?.url ?? "",
+    image: toMediaSrc(card.featuredImage?.url) ?? "",
   };
 }
 
@@ -401,6 +404,26 @@ export async function getCompanySettingsDirect(): Promise<CompanySettingsData> {
   }
 }
 
+export async function getCustomCodeDirect(): Promise<CustomCodeData> {
+  const empty: CustomCodeData = { headCode: "", bodyStartCode: "", bodyEndCode: "" };
+  try {
+    const payload = await getPayloadInstance();
+    const doc = await payload.findGlobal({
+      slug: "custom_code",
+      overrideAccess: true,
+      depth: 0,
+    });
+    return {
+      headCode: doc.headCode ?? "",
+      bodyStartCode: doc.bodyStartCode ?? "",
+      bodyEndCode: doc.bodyEndCode ?? "",
+    };
+  } catch (err) {
+    console.warn("[getCustomCodeDirect] fallback to empty:", err);
+    return empty;
+  }
+}
+
 export async function getArticlesDirect(options: GetArticlesOptions = {}): Promise<ArticlesPage> {
   try {
     const payload = await getPayloadInstance();
@@ -462,6 +485,7 @@ export async function getArticleDirect(slug: string): Promise<ArticleDetail> {
       if (fallback) {
         return {
           ...fallback,
+          customCss: extractArticleCss(fallback.content),
           authorType: null,
           relatedRoute: null,
           seo: {
@@ -486,6 +510,7 @@ export async function getArticleDirect(slug: string): Promise<ArticleDetail> {
     return {
       ...toArticle(detail),
       content: detail.contentHtml ?? "",
+      customCss: detail.customCss ?? "",
       tableOfContents: detail.tableOfContents ?? [],
       authorType: detail.authorType ?? null,
       relatedRoute: detail.relatedRoute ?? null,
@@ -497,6 +522,7 @@ export async function getArticleDirect(slug: string): Promise<ArticleDetail> {
       if (fallback) {
         return {
           ...fallback,
+          customCss: extractArticleCss(fallback.content),
           authorType: null,
           relatedRoute: null,
           seo: {
@@ -515,6 +541,7 @@ export async function getArticleDirect(slug: string): Promise<ArticleDetail> {
     if (fallback) {
       return {
         ...fallback,
+        customCss: extractArticleCss(fallback.content),
         authorType: null,
         relatedRoute: null,
         seo: {

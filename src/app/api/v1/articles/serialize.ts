@@ -1,4 +1,5 @@
 ﻿import { PUBLIC_CACHE_HEADERS, serializeImage, serializeRouteCard, toVietnamIso, type ImageOut } from '../../../../lib/api/serialize';
+import { extractArticleCss } from '../../../../lib/seo/articleCss';
 import type { Article, Route } from '../../../../payload-types';
 
 /** Tag theo contract §0: articles → `articles,sitemap` (revalidate=60s). */
@@ -67,6 +68,7 @@ export function serializeArticleDetail(
   relatedRoute: RelatedRouteOut = null,
 ): ArticleOut & {
   contentHtml: string;
+  customCss: string;
   tableOfContents: ArticleTocItem[];
   authorType: string | null;
   relatedRoute: RelatedRouteOut;
@@ -82,6 +84,7 @@ export function serializeArticleDetail(
   return {
     ...serializeArticleCard(article),
     contentHtml: article.contentHtml ?? '',
+    customCss: extractArticleCss(article.content),
     tableOfContents: tocOf(article),
     authorType: article.authorType ?? null,
     relatedRoute,

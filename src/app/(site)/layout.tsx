@@ -9,12 +9,12 @@ import { BookingSupportPopup } from "@/components/layout/BookingSupportPopup";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildGlobalBusinessSchema } from "@/lib/schema";
 import {
-  SITE_DOMAIN,
   BRAND_NAME,
   normalizeSiteDomain,
   getFallbackSiteDomain,
 } from "@/lib/seo";
-import { getRoutes, getCompanySettings } from "@/lib/api";
+import { getRoutes, getCompanySettings, getCustomCode } from "@/lib/api";
+import { buildHeadInjectionScript } from "@/lib/custom-code";
 import Script from "next/script";
 
 // Đồng bộ lại nội dung Payload/Postgres định kỳ mà không cần build lại toàn bộ site.
@@ -86,9 +86,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [companySettings, routes] = await Promise.all([
+  const [companySettings, routes, customCode] = await Promise.all([
     getCompanySettings(),
     getRoutes(),
+    getCustomCode(),
   ]);
   const globalSchema = buildGlobalBusinessSchema(companySettings);
 
@@ -129,8 +130,24 @@ export default async function RootLayout({
           src="https://cdn-onmar.novaontech.com/scripts/autoads-maxlead-widget.js?business_id=1D7025D16F1C4267904CBFA9AF195221"
           strategy="afterInteractive"
         />
+
+        {customCode.headCode.trim() && (
+          <script
+            id="custom-code-head-injection"
+            dangerouslySetInnerHTML={{
+              __html: buildHeadInjectionScript(customCode.headCode),
+            }}
+          />
+        )}
       </head>
       <body className="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-white selection:bg-red-100 selection:text-red-900">
+        {customCode.bodyStartCode.trim() && (
+          <div
+            data-custom-code="body-start"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: customCode.bodyStartCode }}
+          />
+        )}
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -149,6 +166,13 @@ export default async function RootLayout({
         <FloatingContact companyInfo={companySettings.info} />
         <BookingActivityToast />
         <BookingSupportPopup companyInfo={companySettings.info} />
+        {customCode.bodyEndCode.trim() && (
+          <div
+            data-custom-code="body-end"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: customCode.bodyEndCode }}
+          />
+        )}
       </body>
     </html>
   );

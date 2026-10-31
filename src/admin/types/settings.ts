@@ -181,4 +181,12 @@ export interface NotificationSettings {
   updatedAt?: string | null;
 }
 
+export interface CustomCodeSettings {
+  headCode?: string | null;
+  bodyStartCode?: string | null;
+  bodyEndCode?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}
+
 

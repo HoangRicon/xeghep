@@ -12,7 +12,7 @@ export function HeroSection({ companyInfo = COMPANY_INFO }: HeroSectionProps) {
   return (
     <section
       aria-label="Ảnh banner xe ghép liên tỉnh"
-      className="w-full bg-slate-50"
+      className="w-full bg-white"
     >
       <Image
         src={info.heroImageUrl}
@@ -20,9 +20,9 @@ export function HeroSection({ companyInfo = COMPANY_INFO }: HeroSectionProps) {
         width={info.heroImageWidth}
         height={info.heroImageHeight}
         priority
-        sizes="100vw"
+        sizes="(max-width: 1280px) 100vw, 1280px"
         quality={85}
-        className="block h-auto w-full"
+        className="mx-auto block h-auto w-full lg:h-[64vh] lg:max-h-[640px] lg:max-w-7xl lg:object-contain"
       />
     </section>
   );

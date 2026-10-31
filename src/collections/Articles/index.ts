@@ -115,7 +115,7 @@ export const Articles: CollectionConfig = {
       required: true,
       admin: {
         description:
-          "HTML thô. Khi lưu hệ thống tự làm sạch theo allowlist và sinh contentHtml + mục lục.",
+          "HTML thô. Khi lưu hệ thống tự làm sạch theo allowlist và sinh contentHtml + mục lục. Có thể chèn <style>...</style> trong nội dung để tạo CSS riêng cho bài — CSS được tách ra và tự giới hạn trong vùng nội dung, không ảnh hưởng phần còn lại của trang.",
       },
       validate: (value: unknown) => validateArticleHtml(typeof value === "string" ? value : null),
     },
@@ -123,7 +123,11 @@ export const Articles: CollectionConfig = {
       name: "contentHtml",
       type: "textarea",
       label: "HTML đã sanitize (tự sinh)",
-      admin: { readOnly: true, description: "Sinh khi lưu qua sanitize-html + mục lục (T057)." },
+      admin: {
+        readOnly: true,
+        description:
+          "Sinh khi lưu qua sanitize-html + mục lục (T057). Khối <style>/<script> bị loại khỏi HTML này; <style> được lấy từ nội dung gốc và scope riêng khi hiển thị.",
+      },
     },
     {
       name: "tableOfContents",

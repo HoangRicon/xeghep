@@ -124,3 +124,164 @@ iframe {
     opacity: 0;
   }
 }
+
+/* Nội dung bài viết: thay cho plugin typography (prose) chưa được cài đặt. */
+[data-article-content] {
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+[data-article-content] > :first-child {
+  margin-top: 0;
+}
+
+[data-article-content] > :last-child {
+  margin-bottom: 0;
+}
+
+[data-article-content] p {
+  margin: 1.1em 0;
+}
+
+[data-article-content] h2,
+[data-article-content] h3,
+[data-article-content] h4 {
+  color: #0f172a;
+  font-weight: 800;
+  line-height: 1.3;
+  scroll-margin-top: 6rem;
+}
+
+[data-article-content] h2 {
+  margin: 2.2em 0 0.8em;
+  font-size: 1.375rem;
+}
+
+[data-article-content] h3 {
+  margin: 1.8em 0 0.6em;
+  font-size: 1.125rem;
+}
+
+[data-article-content] h4 {
+  margin: 1.6em 0 0.5em;
+  font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+  [data-article-content] {
+    font-size: 1.0625rem;
+  }
+
+  [data-article-content] h2 {
+    font-size: 1.625rem;
+  }
+
+  [data-article-content] h3 {
+    font-size: 1.25rem;
+  }
+}
+
+[data-article-content] ul,
+[data-article-content] ol {
+  margin: 1.1em 0;
+  padding-left: 1.6em;
+}
+
+[data-article-content] ul {
+  list-style: disc;
+}
+
+[data-article-content] ol {
+  list-style: decimal;
+}
+
+[data-article-content] li + li {
+  margin-top: 0.45em;
+}
+
+[data-article-content] li > ul,
+[data-article-content] li > ol {
+  margin: 0.45em 0;
+}
+
+[data-article-content] a {
+  color: #dc2626;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+[data-article-content] a:hover {
+  color: #b91c1c;
+}
+
+[data-article-content] strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+[data-article-content] blockquote {
+  margin: 1.6em 0;
+  border-left: 4px solid #dc2626;
+  border-radius: 0 0.5rem 0.5rem 0;
+  background: #f8fafc;
+  padding: 0.9em 1.1em;
+  color: #475569;
+  font-style: italic;
+}
+
+[data-article-content] blockquote p {
+  margin: 0;
+}
+
+[data-article-content] img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.6em auto;
+  border-radius: 0.75rem;
+}
+
+[data-article-content] figure {
+  margin: 1.6em 0;
+}
+
+[data-article-content] figcaption {
+  margin-top: 0.5em;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+[data-article-content] table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.6em 0;
+  font-size: 0.875rem;
+}
+
+[data-article-content] th,
+[data-article-content] td {
+  border: 1px solid #e2e8f0;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+[data-article-content] th {
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+[data-article-content] hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+}
