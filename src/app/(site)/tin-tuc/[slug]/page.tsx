@@ -129,7 +129,7 @@ export default async function ArticleDetailPage({ params }: Props) {
       <Breadcrumbs items={breadcrumbs} siteDomain={siteDomain} />
 
       <div className="bg-white">
-        <article className="mx-auto max-w-3xl px-4 pb-24 pt-8 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
+        <article className="mx-auto max-w-4xl px-4 pb-24 pt-8 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
           <header className="space-y-4 border-b border-slate-200 pb-6">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-500">
               <span className="inline-block rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-red-700">
@@ -163,7 +163,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                   alt={article.title}
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 768px"
+                  sizes="(max-width: 768px) 100vw, 896px"
                   className="object-cover"
                 />
               </div>
