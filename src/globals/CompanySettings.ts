@@ -249,6 +249,126 @@ export const CompanySettings: GlobalConfig = {
         },
       ],
     },
+    {
+      name: "tracking",
+      label: "Mã theo dõi & Chuyển đổi",
+      type: "group",
+      admin: {
+        description:
+          "Quản lý tất cả mã theo dõi (GTM, Google Ads, Facebook Pixel...). Bật dịch vụ cần dùng và điền ID — hệ thống tự động chèn code đúng chuẩn vào website.",
+      },
+      fields: [
+        {
+          name: "googleTagManager",
+          label: "Google Tag Manager",
+          type: "group",
+          admin: {
+            description:
+              "Trình quản lý thẻ của Google. Bật và điền Container ID để tự động chèn GTM script + noscript vào mọi trang.",
+          },
+          fields: [
+            {
+              name: "enabled",
+              type: "checkbox",
+              label: "Bật Google Tag Manager",
+              defaultValue: false,
+            },
+            {
+              name: "containerId",
+              type: "text",
+              label: "Container ID",
+              admin: {
+                description: "Ví dụ: GTM-TFN9JF6S (lấy từ Google Tag Manager → Admin → Container ID)",
+                condition: (_, siblingData) => siblingData?.enabled,
+              },
+            },
+          ],
+        },
+        {
+          name: "googleAds",
+          label: "Google Ads",
+          type: "group",
+          admin: {
+            description:
+              "Theo dõi chuyển đổi Google Ads. Bật và điền Conversion ID + Label để ghi nhận lượt click nút Gọi.",
+          },
+          fields: [
+            {
+              name: "enabled",
+              type: "checkbox",
+              label: "Bật Google Ads Tracking",
+              defaultValue: false,
+            },
+            {
+              name: "conversionId",
+              type: "text",
+              label: "Conversion ID",
+              admin: {
+                description: "Ví dụ: AW-18539707592 (lấy từ Google Ads → Chuyển đổi → Thẻ)",
+                condition: (_, siblingData) => siblingData?.enabled,
+              },
+            },
+            {
+              name: "conversionLabel",
+              type: "text",
+              label: "Conversion Label",
+              admin: {
+                description: "Ví dụ: AW-18539707592/AbCdEfGhIjK (chỉ cần phần sau send_to:)",
+                condition: (_, siblingData) => siblingData?.enabled,
+              },
+            },
+          ],
+        },
+        {
+          name: "facebookPixel",
+          label: "Facebook Pixel",
+          type: "group",
+          admin: {
+            description:
+              "Theo dõi chuyển đổi Facebook/Meta. Bật và điền Pixel ID để tự động chèn base code.",
+          },
+          fields: [
+            {
+              name: "enabled",
+              type: "checkbox",
+              label: "Bật Facebook Pixel",
+              defaultValue: false,
+            },
+            {
+              name: "pixelId",
+              type: "text",
+              label: "Pixel ID",
+              admin: {
+                description: "Ví dụ: 123456789012345 (lấy từ Facebook Events Manager → Pixel ID)",
+                condition: (_, siblingData) => siblingData?.enabled,
+              },
+            },
+          ],
+        },
+        {
+          name: "customHeadScripts",
+          type: "textarea",
+          label: "Script tùy chỉnh trong <head>",
+          admin: {
+            description:
+              "Dán thêm script/meta tùy ý vào <head> (ví dụ: xác minh Google Search Console, meta tag đặc biệt). Mỗi script trên một dòng.",
+            rows: 6,
+            placeholder: '<meta name="google-site-verification" content="..." />',
+          },
+        },
+        {
+          name: "customBodyScripts",
+          type: "textarea",
+          label: "Script tùy chỉnh trong <body>",
+          admin: {
+            description:
+              "Dán thêm script vào cuối <body> (ví dụ: chat widget, pixel đặc biệt).",
+            rows: 6,
+            placeholder: "<!-- Script tùy chỉnh -->",
+          },
+        },
+      ],
+    },
     derivedField(
       "hotlineHref",
       "Liên kết gọi (tự sinh)",

@@ -67,7 +67,7 @@ const ARTICLE_STYLE_PROPERTIES = [
 // sanitize-html parses each declaration before applying these rules. Block
 // external CSS resources and escapes while allowing var(), clamp() and gradients.
 const SAFE_ARTICLE_STYLE_VALUE =
-  /^(?!.*(?:url\s*\(|expression\s*\(|image-set\s*\(|https?:|[;{}<>\\@!]))[a-z0-9#%.,():+*/\s-]+$/i;
+  /^(?!.*(?:url\s*\(|expression\s*\(|image-set\s*\(|https?:|[;{}<>\\@!]))[a-z0-9#%.,():+*/\s'"-]+$/i;
 
 function articleAllowedStyles(input: string): sanitizeHtml.IOptions["allowedStyles"] {
   const properties: Record<string, RegExp[]> = Object.fromEntries(
@@ -396,6 +396,35 @@ export function sanitizeRoutePricingHtml(
         };
       },
     },
+  });
+}
+
+/**
+ * Điền alt cho ảnh thiếu/để trống alt (ảnh copy từ site khác thường giữ alt="")
+ * để nội dung vẫn qua được FR-D02 trước khi validate.
+ */
+export function fillMissingImageAlt(
+  input: string | null | undefined,
+  fallback?: string | null,
+): string {
+  if (!input) return "";
+  const alt = (fallback ?? "").trim() || "Ảnh minh họa bài viết";
+  const escaped = alt
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  return input.replace(/<img\b[^>]*>/gi, (tag) => {
+    const current = pickAttribute(tag, "alt");
+    if (current !== null && current !== "") return tag;
+    if (/\balt\s*=/i.test(tag)) {
+      return tag.replace(
+        /\balt\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/i,
+        `alt="${escaped}"`,
+      );
+    }
+    return tag.replace(/^<img\b/i, `<img alt="${escaped}"`);
   });
 }
 

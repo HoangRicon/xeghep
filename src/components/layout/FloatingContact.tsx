@@ -1,13 +1,37 @@
+"use client";
+
 import { Phone } from "lucide-react";
 import { COMPANY_INFO } from "@/data/company-info";
 import type { CompanyInfoData } from "@/lib/api";
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
+  }
+}
+
+interface FloatingContactProps {
+  companyInfo?: CompanyInfoData;
+  callConversionSnippet?: string;
+}
+
 export function FloatingContact({
   companyInfo = COMPANY_INFO,
-}: {
-  companyInfo?: CompanyInfoData;
-}) {
+  callConversionSnippet = "",
+}: FloatingContactProps) {
   const info = companyInfo ?? COMPANY_INFO;
+
+  const handleCallClick = () => {
+    if (callConversionSnippet && typeof window.gtag === "function") {
+      try {
+        // eslint-disable-next-line no-eval
+        new Function("gtag", callConversionSnippet)(window.gtag);
+      } catch (e) {
+        console.warn("Call conversion event failed:", e);
+      }
+    }
+  };
 
   return (
     <>
@@ -42,6 +66,7 @@ export function FloatingContact({
         {/* Nút nổi Gọi điện (chuyển sang thay thế thanh hotline dài cũ) */}
         <a
           href={info.hotlineHref}
+          onClick={handleCallClick}
           className="contact-button contact-button--phone relative flex items-center justify-center w-14 h-14 rounded-full bg-red-600 text-white shadow-xl shadow-red-600/40 hover:bg-red-700 hover:scale-110 active:scale-95 transition-all duration-200 group"
           aria-label={`Gọi điện ngay ${info.hotline}`}
         >

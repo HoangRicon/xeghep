@@ -129,7 +129,7 @@ iframe {
 [data-article-content] {
   color: #334155;
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 
@@ -142,50 +142,36 @@ iframe {
 }
 
 [data-article-content] p {
-  margin: 1.1em 0;
+  margin: 0 0 1.5em;
 }
 
 [data-article-content] h2,
 [data-article-content] h3,
 [data-article-content] h4 {
   color: #0f172a;
-  font-weight: 800;
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.25;
   scroll-margin-top: 6rem;
 }
 
 [data-article-content] h2 {
-  margin: 2.2em 0 0.8em;
-  font-size: 1.375rem;
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
 }
 
 [data-article-content] h3 {
-  margin: 1.8em 0 0.6em;
-  font-size: 1.125rem;
+  margin: 0 0 1.5rem;
+  font-size: 1.25rem;
 }
 
 [data-article-content] h4 {
-  margin: 1.6em 0 0.5em;
-  font-size: 1rem;
-}
-
-@media (min-width: 640px) {
-  [data-article-content] {
-    font-size: 1.0625rem;
-  }
-
-  [data-article-content] h2 {
-    font-size: 1.625rem;
-  }
-
-  [data-article-content] h3 {
-    font-size: 1.25rem;
-  }
+  margin: 0 0 1.5rem;
+  font-size: 1.125rem;
 }
 
 [data-article-content] ul,
 [data-article-content] ol {
-  margin: 1.1em 0;
+  margin: 0 0 1.5em;
   padding-left: 1.6em;
 }
 
@@ -195,10 +181,6 @@ iframe {
 
 [data-article-content] ol {
   list-style: decimal;
-}
-
-[data-article-content] li + li {
-  margin-top: 0.45em;
 }
 
 [data-article-content] li > ul,
@@ -218,12 +200,11 @@ iframe {
 }
 
 [data-article-content] strong {
-  color: #0f172a;
   font-weight: 700;
 }
 
 [data-article-content] blockquote {
-  margin: 1.6em 0;
+  margin: 0 0 1.5em;
   border-left: 4px solid #dc2626;
   border-radius: 0 0.5rem 0.5rem 0;
   background: #f8fafc;
@@ -240,12 +221,11 @@ iframe {
   display: block;
   max-width: 100%;
   height: auto;
-  margin: 1.6em auto;
-  border-radius: 0.75rem;
+  margin: 1.5em auto;
 }
 
 [data-article-content] figure {
-  margin: 1.6em 0;
+  margin: 0 0 1.5em;
 }
 
 [data-article-content] figcaption {
@@ -261,8 +241,8 @@ iframe {
   max-width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
-  margin: 1.6em 0;
-  font-size: 0.875rem;
+  margin: 0 0 1.5em;
+  font-size: 1em;
 }
 
 [data-article-content] th,

@@ -15,6 +15,7 @@ import {
 } from "@/lib/seo";
 import { getRoutes, getCompanySettings, getCustomCode } from "@/lib/api";
 import { buildHeadInjectionScript } from "@/lib/custom-code";
+import { buildTrackingScripts } from "@/lib/tracking-scripts";
 import Script from "next/script";
 
 // Đồng bộ lại nội dung Payload/Postgres định kỳ mà không cần build lại toàn bộ site.
@@ -92,37 +93,19 @@ export default async function RootLayout({
     getCustomCode(),
   ]);
   const globalSchema = buildGlobalBusinessSchema(companySettings);
+  const tracking = buildTrackingScripts(companySettings.info.tracking);
 
   return (
     <html lang="vi" className={fontSans.variable}>
       <head>
         <meta charSet="UTF-8" />
-        {/* Google Tag Manager */}
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-TFN9JF6S');
-          `}
-        </Script>
-
-        {/* Google tag - Google Ads */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-18539707592"
-          strategy="afterInteractive"
-        />
-
-        <Script id="google-ads-tag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            window.gtag = gtag;
-            gtag('js', new Date());
-            gtag('config', 'AW-18539707592');
-          `}
-        </Script>
+        {/* Tracking scripts từ admin */}
+        {tracking.headScripts.map((script, i) => (
+          <script
+            key={`tracking-head-${i}`}
+            dangerouslySetInnerHTML={{ __html: script }}
+          />
+        ))}
 
         {/* AutoAds Tracking Code */}
         <Script
@@ -148,22 +131,25 @@ export default async function RootLayout({
             dangerouslySetInnerHTML={{ __html: customCode.bodyStartCode }}
           />
         )}
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-TFN9JF6S"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
+        {/* Tracking body scripts (GTM noscript, etc.) */}
+        {tracking.bodyScripts.map((script, i) => (
+          <div
+            key={`tracking-body-${i}`}
+            data-tracking="body"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: script }}
           />
-        </noscript>
+        ))}
         <JsonLd data={globalSchema} />
         <Header routes={routes} companyInfo={companySettings.info} />
         <main id="main-content" className="flex-grow">
           {children}
         </main>
         <Footer companyInfo={companySettings.info} />
-        <FloatingContact companyInfo={companySettings.info} />
+        <FloatingContact
+          companyInfo={companySettings.info}
+          callConversionSnippet={tracking.callConversionSnippet}
+        />
         <BookingActivityToast />
         <BookingSupportPopup companyInfo={companySettings.info} />
         {customCode.bodyEndCode.trim() && (

@@ -156,6 +156,17 @@ export const SEED_COMPANY = {
       isVisible: true,
     },
   ],
+  tracking: {
+    googleTagManager: {
+      enabled: true,
+      containerId: "GTM-TFN9JF6S",
+    },
+    googleAds: {
+      enabled: true,
+      conversionId: "AW-18539707592",
+      conversionLabel: "AW-18539707592/AbCdEfGhIjK",
+    },
+  },
 };
 
 const invokedAsScript = (process.argv[1] ?? "")

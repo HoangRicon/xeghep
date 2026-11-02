@@ -1386,6 +1386,23 @@ export interface CompanySetting {
         id?: string | null;
       }[]
     | null;
+  tracking?: {
+    googleTagManager?: {
+      enabled?: boolean | null;
+      containerId?: string | null;
+    } | null;
+    googleAds?: {
+      enabled?: boolean | null;
+      conversionId?: string | null;
+      conversionLabel?: string | null;
+    } | null;
+    facebookPixel?: {
+      enabled?: boolean | null;
+      pixelId?: string | null;
+    } | null;
+    customHeadScripts?: string | null;
+    customBodyScripts?: string | null;
+  } | null;
   /**
    * Tính từ "Hotline (số thuần)" lúc đọc, ví dụ tel:+84962298293 — không lưu DB (FR-D10).
    */

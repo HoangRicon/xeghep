@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 import { slugify } from "../../lib/seo/slugify";
-import { validateArticleHtml } from "../../lib/seo/sanitize";
+import { fillMissingImageAlt, validateArticleHtml } from "../../lib/seo/sanitize";
 import { processArticleContent } from "../../lib/seo/toc";
 import { createRedirectOnSlugChange } from "../hooks/createRedirectOnSlugChange";
 import { isAdminOrEditor } from "../shared/access";
@@ -61,6 +61,11 @@ export const Articles: CollectionConfig = {
         if (title && (!data.slug || typeof data.slug !== "string")) {
           const generated = slugify(String(title));
           if (generated) data.slug = generated;
+        }
+
+        // Ảnh copy từ site khác thường có alt="" → điền alt từ tiêu đề để qua FR-D02
+        if (typeof data.content === "string") {
+          data.content = fillMissingImageAlt(data.content, title ? String(title) : null);
         }
 
         return data;
@@ -123,6 +128,7 @@ export const Articles: CollectionConfig = {
       name: "contentHtml",
       type: "textarea",
       label: "HTML đã sanitize (tự sinh)",
+      maxLength: 500000,
       admin: {
         readOnly: true,
         description:

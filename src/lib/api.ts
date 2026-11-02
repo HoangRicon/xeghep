@@ -461,6 +461,23 @@ export type CompanyInfoData = {
   fleetDescription: string;
   bookingPromise: string;
   summary: string;
+  tracking?: {
+    googleTagManager?: {
+      enabled?: boolean | null;
+      containerId?: string | null;
+    } | null;
+    googleAds?: {
+      enabled?: boolean | null;
+      conversionId?: string | null;
+      conversionLabel?: string | null;
+    } | null;
+    facebookPixel?: {
+      enabled?: boolean | null;
+      pixelId?: string | null;
+    } | null;
+    customHeadScripts?: string | null;
+    customBodyScripts?: string | null;
+  } | null;
 };
 
 export type CompanySettingsOut = {
@@ -511,6 +528,23 @@ export type CompanySettingsOut = {
   testimonials?:
     | (Omit<Testimonial, "id"> & { id?: string; isVisible?: boolean | null })[]
     | null;
+  tracking?: {
+    googleTagManager?: {
+      enabled?: boolean | null;
+      containerId?: string | null;
+    } | null;
+    googleAds?: {
+      enabled?: boolean | null;
+      conversionId?: string | null;
+      conversionLabel?: string | null;
+    } | null;
+    facebookPixel?: {
+      enabled?: boolean | null;
+      pixelId?: string | null;
+    } | null;
+    customHeadScripts?: string | null;
+    customBodyScripts?: string | null;
+  } | null;
   hotlineHref?: string | null;
   zaloHref?: string | null;
   smsHref?: string | null;
@@ -642,6 +676,7 @@ export async function getCompanySettings(): Promise<CompanySettingsData> {
       bookingPromise:
         text(banner.bookingPromise) || COMPANY_INFO.bookingPromise,
       summary: text(banner.summary) || COMPANY_INFO.summary,
+      tracking: doc.tracking ?? null,
     };
 
     const commitments =

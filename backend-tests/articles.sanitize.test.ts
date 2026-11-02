@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { articleBeforeChange } from '../src/collections/Articles/index';
-import { sanitizeArticleHtml, validateArticleHtml } from '../src/lib/seo/sanitize';
+import {
+  fillMissingImageAlt,
+  sanitizeArticleHtml,
+  validateArticleHtml,
+} from '../src/lib/seo/sanitize';
 import { injectTocIds, processArticleContent } from '../src/lib/seo/toc';
 
 describe('sanitizeArticleHtml — allowlist (spec 4.2.2 / FR-D01)', () => {
@@ -85,6 +89,22 @@ describe('sanitizeArticleHtml — allowlist (spec 4.2.2 / FR-D01)', () => {
     expect(out).not.toContain('steal()');
   });
 
+  it('keeps quoted font-family from copied content', () => {
+    const out = sanitizeArticleHtml(
+      '<p style=\'margin: 0px 0px 1.5em; font-family: &quot;Segoe UI&quot;, Roboto, sans-serif\'>Xin chào</p>',
+    );
+    expect(out).toContain('font-family:&quot;Segoe UI&quot;, Roboto, sans-serif');
+    expect(out).toContain('margin:0px 0px 1.5em');
+  });
+
+  it('still rejects unsafe values that use quotes to smuggle URLs', () => {
+    const out = sanitizeArticleHtml(
+      '<p style="font-family: &quot;Segoe UI&quot;; background: url(https://evil.example/x)">Xin chào</p>',
+    );
+    expect(out).not.toContain('evil.example');
+    expect(out).toContain('font-family:&quot;Segoe UI&quot;');
+  });
+
   it('drops javascript: and data: URLs', () => {
     const out = sanitizeArticleHtml(
       '<a href="javascript:alert(1)">bad</a> <img src="data:text/html;base64,PHNjcmlwdD4=" alt="x" width="1" height="1" />',
@@ -160,6 +180,27 @@ describe('validateArticleHtml — ảnh bắt buộc alt/width/height (FR-D02)',
     expect(validateArticleHtml('<p>Không có ảnh.</p>')).toBe(true);
     expect(validateArticleHtml('')).toBe(true);
     expect(validateArticleHtml(null)).toBe(true);
+  });
+});
+
+describe('fillMissingImageAlt — ảnh copy từ site khác', () => {
+  it('fills empty or missing alt from the fallback and passes FR-D02', () => {
+    const filled = fillMissingImageAlt(
+      '<img src="/a.jpg" alt="" width="800" height="450" /><img src="/b.jpg" width="800" height="600" />',
+      'Xe ghép Hà Nội – Vịnh Lan Hạ',
+    );
+    expect(filled).not.toContain('alt=""');
+    expect(filled.match(/alt="Xe ghép Hà Nội – Vịnh Lan Hạ"/g)).toHaveLength(2);
+    expect(validateArticleHtml(filled)).toBe(true);
+  });
+
+  it('keeps an existing meaningful alt and escapes quotes in the fallback', () => {
+    expect(fillMissingImageAlt('<img src="/a.jpg" alt="Ảnh thật" />', 'Tiêu đề')).toBe(
+      '<img src="/a.jpg" alt="Ảnh thật" />',
+    );
+    expect(fillMissingImageAlt('<img src="/a.jpg" alt="" />', 'Bảng "giá"')).toContain(
+      'alt="Bảng &quot;giá&quot;"',
+    );
   });
 });
 
