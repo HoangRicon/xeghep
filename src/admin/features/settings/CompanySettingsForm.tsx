@@ -29,6 +29,7 @@ import type {
   CompanyCommitment,
   CompanyPaymentMethod,
   CompanyTestimonial,
+  CompanyTracking,
   CommitmentIcon,
   PaymentMethodIcon,
   AreaServedItem,
@@ -157,6 +158,18 @@ export function CompanySettingsForm() {
 
   const [commitments, setCommitments] = useState<CompanyCommitment[]>(DEFAULT_COMMITMENTS);
   const [paymentMethods, setPaymentMethods] = useState<CompanyPaymentMethod[]>(DEFAULT_PAYMENT_METHODS);
+
+  // Tracking state
+  const [gtmEnabled, setGtmEnabled] = useState(false);
+  const [gtmContainerId, setGtmContainerId] = useState('');
+  const [googleAdsEnabled, setGoogleAdsEnabled] = useState(false);
+  const [googleAdsConversionId, setGoogleAdsConversionId] = useState('');
+  const [googleAdsConversionLabel, setGoogleAdsConversionLabel] = useState('');
+  const [facebookPixelEnabled, setFacebookPixelEnabled] = useState(false);
+  const [facebookPixelId, setFacebookPixelId] = useState('');
+  const [customHeadScripts, setCustomHeadScripts] = useState('');
+  const [customBodyScripts, setCustomBodyScripts] = useState('');
+
   const [testimonials, setTestimonials] = useState<CompanyTestimonial[]>([
     {
       author: 'Nguyễn Văn Hùng',
@@ -232,6 +245,23 @@ export function CompanySettingsForm() {
         }
         if (data.testimonials && data.testimonials.length > 0) {
           setTestimonials(data.testimonials);
+        }
+        if (data.tracking) {
+          if (data.tracking.googleTagManager) {
+            setGtmEnabled(data.tracking.googleTagManager.enabled ?? false);
+            setGtmContainerId(data.tracking.googleTagManager.containerId || '');
+          }
+          if (data.tracking.googleAds) {
+            setGoogleAdsEnabled(data.tracking.googleAds.enabled ?? false);
+            setGoogleAdsConversionId(data.tracking.googleAds.conversionId || '');
+            setGoogleAdsConversionLabel(data.tracking.googleAds.conversionLabel || '');
+          }
+          if (data.tracking.facebookPixel) {
+            setFacebookPixelEnabled(data.tracking.facebookPixel.enabled ?? false);
+            setFacebookPixelId(data.tracking.facebookPixel.pixelId || '');
+          }
+          setCustomHeadScripts(data.tracking.customHeadScripts || '');
+          setCustomBodyScripts(data.tracking.customBodyScripts || '');
         }
       }
     } catch (err) {
@@ -389,6 +419,23 @@ export function CompanySettingsForm() {
       commitments,
       paymentMethods,
       testimonials,
+      tracking: {
+        googleTagManager: {
+          enabled: gtmEnabled,
+          containerId: gtmContainerId.trim() || null,
+        },
+        googleAds: {
+          enabled: googleAdsEnabled,
+          conversionId: googleAdsConversionId.trim() || null,
+          conversionLabel: googleAdsConversionLabel.trim() || null,
+        },
+        facebookPixel: {
+          enabled: facebookPixelEnabled,
+          pixelId: facebookPixelId.trim() || null,
+        },
+        customHeadScripts: customHeadScripts.trim() || null,
+        customBodyScripts: customBodyScripts.trim() || null,
+      },
     };
 
     try {
@@ -1025,6 +1072,153 @@ export function CompanySettingsForm() {
               />
             </div>
           ))}
+        </CardContent>
+      </Card>
+
+      {/* Mã theo dõi & Chuyển đổi */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Mã theo dõi & Chuyển đổi</CardTitle>
+          <CardDescription>
+            Quản lý GTM, Google Ads, Facebook Pixel. Bật dịch vụ cần dùng và điền ID — hệ thống tự động chèn code đúng chuẩn vào website.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Google Tag Manager */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="gtm-enabled"
+                checked={gtmEnabled}
+                onChange={(e) => setGtmEnabled(e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="gtm-enabled" className="text-sm font-bold text-slate-900 cursor-pointer">
+                Bật Google Tag Manager
+              </label>
+            </div>
+            <p className="text-xs text-slate-600 ml-7">
+              Trình quản lý thẻ của Google. Bật và điền Container ID để tự động chèn GTM script + noscript vào mọi trang.
+            </p>
+            {gtmEnabled && (
+              <div className="ml-7">
+                <Input
+                  label="Container ID"
+                  value={gtmContainerId}
+                  onChange={(e) => setGtmContainerId(e.target.value)}
+                  placeholder="GTM-TFN9JF6S"
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Lấy từ Google Tag Manager → Admin → Container ID
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Google Ads */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="google-ads-enabled"
+                checked={googleAdsEnabled}
+                onChange={(e) => setGoogleAdsEnabled(e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="google-ads-enabled" className="text-sm font-bold text-slate-900 cursor-pointer">
+                Bật Google Ads Tracking
+              </label>
+            </div>
+            <p className="text-xs text-slate-600 ml-7">
+              Theo dõi chuyển đổi Google Ads. Bật và điền Conversion ID + Label để ghi nhận lượt click nút Gọi.
+            </p>
+            {googleAdsEnabled && (
+              <div className="ml-7 space-y-3">
+                <div>
+                  <Input
+                    label="Conversion ID"
+                    value={googleAdsConversionId}
+                    onChange={(e) => setGoogleAdsConversionId(e.target.value)}
+                    placeholder="AW-18539707592"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Lấy từ Google Ads → Chuyển đổi → Thẻ
+                  </p>
+                </div>
+                <div>
+                  <Input
+                    label="Conversion Label"
+                    value={googleAdsConversionLabel}
+                    onChange={(e) => setGoogleAdsConversionLabel(e.target.value)}
+                    placeholder="AW-18539707592/AbCdEfGhIjK"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Chỉ cần phần sau send_to:
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Facebook Pixel */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="facebook-pixel-enabled"
+                checked={facebookPixelEnabled}
+                onChange={(e) => setFacebookPixelEnabled(e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="facebook-pixel-enabled" className="text-sm font-bold text-slate-900 cursor-pointer">
+                Bật Facebook Pixel
+              </label>
+            </div>
+            <p className="text-xs text-slate-600 ml-7">
+              Theo dõi chuyển đổi Facebook/Meta. Bật và điền Pixel ID để tự động chèn base code.
+            </p>
+            {facebookPixelEnabled && (
+              <div className="ml-7">
+                <Input
+                  label="Pixel ID"
+                  value={facebookPixelId}
+                  onChange={(e) => setFacebookPixelId(e.target.value)}
+                  placeholder="123456789012345"
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Lấy từ Facebook Events Manager → Pixel ID
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Custom Scripts */}
+          <div className="space-y-3">
+            <Textarea
+              label="Script tùy chỉnh trong &lt;head&gt;"
+              value={customHeadScripts}
+              onChange={(e) => setCustomHeadScripts(e.target.value)}
+              placeholder='<meta name="google-site-verification" content="..." />'
+              rows={4}
+            />
+            <p className="text-xs text-slate-500">
+              Dán thêm script/meta tùy ý vào &lt;head&gt; (ví dụ: xác minh Google Search Console, meta tag đặc biệt).
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <Textarea
+              label="Script tùy chỉnh trong &lt;body&gt;"
+              value={customBodyScripts}
+              onChange={(e) => setCustomBodyScripts(e.target.value)}
+              placeholder="<!-- Script tùy chỉnh -->"
+              rows={4}
+            />
+            <p className="text-xs text-slate-500">
+              Dán thêm script vào cuối &lt;body&gt; (ví dụ: chat widget, pixel đặc biệt).
+            </p>
+          </div>
         </CardContent>
       </Card>
 
