@@ -128,9 +128,13 @@ iframe {
 /* Nội dung bài viết: thay cho plugin typography (prose) chưa được cài đặt. */
 [data-article-content] {
   color: #334155;
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
   overflow-wrap: anywhere;
+  font-family: var(--font-sans);
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
 }
 
 [data-article-content] > :first-child {
@@ -156,17 +160,22 @@ iframe {
 
 [data-article-content] h2 {
   margin: 0 0 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.875rem;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
 [data-article-content] h3 {
-  margin: 0 0 1.5rem;
-  font-size: 1.25rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
 }
 
 [data-article-content] h4 {
-  margin: 0 0 1.5rem;
-  font-size: 1.125rem;
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  line-height: 1.4;
 }
 
 [data-article-content] ul,
