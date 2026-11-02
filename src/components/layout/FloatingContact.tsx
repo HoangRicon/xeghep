@@ -77,7 +77,7 @@ export function FloatingContact({
           />
           <span className="contact-breathe" aria-hidden="true" />
           <Phone
-            className="contact-icon relative z-10 w-6 h-6"
+            className="contact-icon relative z-10 w-6 h-6 pointer-events-none"
             aria-hidden="true"
           />
           <span className="sr-only">Gọi ngay {info.hotline}</span>
