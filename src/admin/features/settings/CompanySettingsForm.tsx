@@ -167,8 +167,6 @@ export function CompanySettingsForm() {
   const [googleAdsConversionLabel, setGoogleAdsConversionLabel] = useState('');
   const [facebookPixelEnabled, setFacebookPixelEnabled] = useState(false);
   const [facebookPixelId, setFacebookPixelId] = useState('');
-  const [customHeadScripts, setCustomHeadScripts] = useState('');
-  const [customBodyScripts, setCustomBodyScripts] = useState('');
 
   const [testimonials, setTestimonials] = useState<CompanyTestimonial[]>([
     {
@@ -260,8 +258,6 @@ export function CompanySettingsForm() {
             setFacebookPixelEnabled(data.tracking.facebookPixel.enabled ?? false);
             setFacebookPixelId(data.tracking.facebookPixel.pixelId || '');
           }
-          setCustomHeadScripts(data.tracking.customHeadScripts || '');
-          setCustomBodyScripts(data.tracking.customBodyScripts || '');
         }
       }
     } catch (err) {
@@ -433,8 +429,6 @@ export function CompanySettingsForm() {
           enabled: facebookPixelEnabled,
           pixelId: facebookPixelId.trim() || null,
         },
-        customHeadScripts: customHeadScripts.trim() || null,
-        customBodyScripts: customBodyScripts.trim() || null,
       },
     };
 
@@ -1081,6 +1075,8 @@ export function CompanySettingsForm() {
           <CardTitle>Mã theo dõi & Chuyển đổi</CardTitle>
           <CardDescription>
             Quản lý GTM, Google Ads, Facebook Pixel. Bật dịch vụ cần dùng và điền ID — hệ thống tự động chèn code đúng chuẩn vào website.
+            <br />
+            <span className="text-blue-600 font-medium">Script tùy chỉnh khác → dùng tab "Custom Code (Head / Body / Footer)"</span>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -1191,33 +1187,6 @@ export function CompanySettingsForm() {
                 </p>
               </div>
             )}
-          </div>
-
-          {/* Custom Scripts */}
-          <div className="space-y-3">
-            <Textarea
-              label="Script tùy chỉnh trong &lt;head&gt;"
-              value={customHeadScripts}
-              onChange={(e) => setCustomHeadScripts(e.target.value)}
-              placeholder='<meta name="google-site-verification" content="..." />'
-              rows={4}
-            />
-            <p className="text-xs text-slate-500">
-              Dán thêm script/meta tùy ý vào &lt;head&gt; (ví dụ: xác minh Google Search Console, meta tag đặc biệt).
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <Textarea
-              label="Script tùy chỉnh trong &lt;body&gt;"
-              value={customBodyScripts}
-              onChange={(e) => setCustomBodyScripts(e.target.value)}
-              placeholder="<!-- Script tùy chỉnh -->"
-              rows={4}
-            />
-            <p className="text-xs text-slate-500">
-              Dán thêm script vào cuối &lt;body&gt; (ví dụ: chat widget, pixel đặc biệt).
-            </p>
           </div>
         </CardContent>
       </Card>
