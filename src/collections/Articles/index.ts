@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 import { slugify } from "../../lib/seo/slugify";
-import { fillMissingImageAlt, validateArticleHtml } from "../../lib/seo/sanitize";
+import { fillMissingImageAlt, fillMissingImageDimensions, validateArticleHtml } from "../../lib/seo/sanitize";
 import { processArticleContent } from "../../lib/seo/toc";
 import { createRedirectOnSlugChange } from "../hooks/createRedirectOnSlugChange";
 import { isAdminOrEditor } from "../shared/access";
@@ -66,6 +66,8 @@ export const Articles: CollectionConfig = {
         // Ảnh copy từ site khác thường có alt="" → điền alt từ tiêu đề để qua FR-D02
         if (typeof data.content === "string") {
           data.content = fillMissingImageAlt(data.content, title ? String(title) : null);
+          // Ảnh copy từ site khác thường thiếu width/height → điền mặc định 800x600
+          data.content = fillMissingImageDimensions(data.content);
         }
 
         return data;

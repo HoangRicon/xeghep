@@ -401,7 +401,7 @@ export function sanitizeRoutePricingHtml(
 
 /**
  * Điền alt cho ảnh thiếu/để trống alt (ảnh copy từ site khác thường giữ alt="")
- * để nội dung vẫn qua được FR-D02 trước khi validate.
+ * để nội dung qua được FR-D02 trước khi validate.
  */
 export function fillMissingImageAlt(
   input: string | null | undefined,
@@ -425,6 +425,51 @@ export function fillMissingImageAlt(
       );
     }
     return tag.replace(/^<img\b/i, `<img alt="${escaped}"`);
+  });
+}
+
+/**
+ * Điền width/height cho ảnh thiếu (ảnh copy từ site khác thường không có).
+ * Mặc định 800x600 để qua validation FR-D02 và tránh CLS.
+ */
+export function fillMissingImageDimensions(
+  input: string | null | undefined,
+  defaultWidth = 800,
+  defaultHeight = 600,
+): string {
+  if (!input) return "";
+
+  return input.replace(/<img\b[^>]*>/gi, (tag) => {
+    const width = pickAttribute(tag, "width");
+    const height = pickAttribute(tag, "height");
+
+    if (width && height) return tag;
+
+    let result = tag;
+
+    if (!width) {
+      if (/\bwidth\s*=/i.test(tag)) {
+        result = result.replace(
+          /\bwidth\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/i,
+          `width="${defaultWidth}"`,
+        );
+      } else {
+        result = result.replace(/^<img\b/i, `<img width="${defaultWidth}"`);
+      }
+    }
+
+    if (!height) {
+      if (/\bheight\s*=/i.test(result)) {
+        result = result.replace(
+          /\bheight\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/i,
+          `height="${defaultHeight}"`,
+        );
+      } else {
+        result = result.replace(/^<img\b/i, `<img height="${defaultHeight}"`);
+      }
+    }
+
+    return result;
   });
 }
 
