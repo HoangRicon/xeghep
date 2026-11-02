@@ -247,7 +247,7 @@ export function Header({
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-extrabold text-white bg-red-600 hover:bg-red-700 active:bg-red-800 shadow-md shadow-red-600/30 transition-all hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 cursor-pointer"
                 aria-label={`Gọi ngay tổng đài ${info.hotline}`}
               >
-                <Phone className="w-4 h-4 animate-pulse" aria-hidden="true" />
+                <Phone className="w-4 h-4 animate-pulse pointer-events-none" aria-hidden="true" />
                 <span>GỌI NGAY: {info.hotline}</span>
               </a>
             </div>
@@ -259,7 +259,7 @@ export function Header({
                 className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700"
                 aria-label={`Gọi ngay ${info.hotline}`}
               >
-                <Phone className="w-3.5 h-3.5" aria-hidden="true" />
+                <Phone className="w-3.5 h-3.5 pointer-events-none" aria-hidden="true" />
                 <span>Gọi ngay</span>
               </a>
             </div>
@@ -390,7 +390,7 @@ export function Header({
                   className="w-full text-center py-2.5 px-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 flex items-center justify-center gap-1.5 shadow-md transition-colors"
                   aria-label={`Gọi ngay tổng đài ${info.hotline}`}
                 >
-                  <Phone className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  <Phone className="w-3.5 h-3.5 shrink-0 pointer-events-none" aria-hidden="true" />
                   <span className="leading-tight truncate">GỌI: {info.hotline}</span>
                 </a>
               </div>

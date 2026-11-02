@@ -91,7 +91,7 @@ export function RoutePricingCard({
           className="mt-0.5 w-full py-2 sm:py-2.5 px-3 rounded-lg sm:rounded-xl bg-[#d9261c] hover:bg-[#b81d14] active:scale-[0.98] text-white font-black uppercase tracking-wide text-xs text-center shadow-sm shadow-red-900/30 flex items-center justify-center gap-1.5 transition-all"
         >
           <span>Gọi ngay</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5 pointer-events-none" />
         </a>
       </div>
     </div>

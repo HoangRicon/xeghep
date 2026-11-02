@@ -189,7 +189,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               href={info.hotlineHref}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700"
             >
-              <PhoneCall className="h-3.5 w-3.5 animate-pulse" aria-hidden="true" />
+              <PhoneCall className="h-3.5 w-3.5 animate-pulse pointer-events-none" aria-hidden="true" />
               <span>Gọi: {info.hotline}</span>
             </a>
           </div>
@@ -248,7 +248,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                 href={info.hotlineHref}
                 className="flex items-center gap-1.5 rounded-xl bg-red-600 px-5 py-3 text-xs font-extrabold text-white hover:bg-red-700 sm:text-sm"
               >
-                <PhoneCall className="h-4 w-4" aria-hidden="true" />
+                <PhoneCall className="h-4 w-4 pointer-events-none" aria-hidden="true" />
                 <span>Gọi {info.hotline}</span>
               </a>
             </div>

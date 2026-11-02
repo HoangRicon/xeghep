@@ -52,7 +52,7 @@ export default async function HomePage() {
                   href={companySettings.info.hotlineHref}
                   className="inline-flex items-center gap-1.5 font-bold text-red-600 hover:text-red-700"
                 >
-                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  <Phone className="h-4 w-4 pointer-events-none" aria-hidden="true" />
                   Hotline 24/7: {companySettings.info.hotline}
                 </a>
                 {companySettings.info.heroBenefit1 && (

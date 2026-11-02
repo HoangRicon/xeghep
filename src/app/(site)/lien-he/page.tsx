@@ -142,14 +142,14 @@ export default async function ContactPage() {
                       rel="noopener noreferrer"
                       className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
                     >
-                      <MessageSquare className="w-4 h-4" />
+                      <MessageSquare className="w-4 h-4 pointer-events-none" />
                       <span>Nhắn Tin Zalo</span>
                     </a>
                     <a
                       href={info.hotlineHref}
                       className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
                     >
-                      <Phone className="w-4 h-4" />
+                      <Phone className="w-4 h-4 pointer-events-none" />
                       <span>Gọi Hotline</span>
                     </a>
                   </div>

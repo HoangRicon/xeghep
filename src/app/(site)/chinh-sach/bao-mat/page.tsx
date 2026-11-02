@@ -103,7 +103,7 @@ export default async function PrivacyPolicyPage() {
                 href={info.hotlineHref}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800"
               >
-                <Phone className="w-3.5 h-3.5 text-red-400" />
+                <Phone className="w-3.5 h-3.5 text-red-400 pointer-events-none" />
                 <span>{info.hotline}</span>
               </a>
             </div>

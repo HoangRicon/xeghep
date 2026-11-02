@@ -104,7 +104,7 @@ export default async function PaymentPolicyPage() {
                 href={info.hotlineHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs"
               >
-                <Phone className="w-3.5 h-3.5" />
+                <Phone className="w-3.5 h-3.5 pointer-events-none" />
                 <span>Liên hệ Hotline: {info.hotline}</span>
               </a>
             </div>

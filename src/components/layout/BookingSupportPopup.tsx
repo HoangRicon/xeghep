@@ -121,7 +121,7 @@ export function BookingSupportPopup({
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-red-600 to-red-500 px-4 py-3 text-sm font-black uppercase text-white shadow-lg shadow-red-500/25 transition hover:from-red-700 hover:to-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 sm:text-base"
             aria-label={`Gọi trực tiếp ${info.hotline}`}
           >
-            <Phone className="h-5 w-5" aria-hidden="true" />
+            <Phone className="h-5 w-5 pointer-events-none" aria-hidden="true" />
             Gọi trực tiếp
           </a>
 
@@ -131,7 +131,7 @@ export function BookingSupportPopup({
             rel="noopener noreferrer"
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#0866ff] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[#0054d8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:text-base"
           >
-            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            <MessageCircle className="h-5 w-5 pointer-events-none" aria-hidden="true" />
             Nhắn tin Zalo báo giá ngay
           </a>
         </div>

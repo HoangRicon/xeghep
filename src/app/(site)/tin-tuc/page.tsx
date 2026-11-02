@@ -294,7 +294,7 @@ export default async function NewsIndexPage({ searchParams }: Props) {
                 href={info.hotlineHref}
                 className="mt-5 inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-black text-white hover:bg-red-700"
               >
-                <PhoneCall className="h-4 w-4 animate-pulse" aria-hidden="true" />
+                <PhoneCall className="h-4 w-4 animate-pulse pointer-events-none" aria-hidden="true" />
                 <span>Gọi ngay: {info.hotline}</span>
               </a>
             </div>

@@ -35,7 +35,7 @@ export default async function NotFound() {
             href={info.hotlineHref}
             className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition-colors"
           >
-            <Phone className="w-4 h-4" aria-hidden="true" />
+            <Phone className="w-4 h-4 pointer-events-none" aria-hidden="true" />
             <span>Hotline 24/7 ({info.hotline})</span>
           </a>
         </div>

@@ -169,7 +169,7 @@ async function ThankYouContent({ searchParams }: ThankYouProps) {
               href={info.hotlineHref}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md transition-colors"
             >
-              <Phone className="w-4 h-4" aria-hidden="true" />
+              <Phone className="w-4 h-4 pointer-events-none" aria-hidden="true" />
               <span>Hotline 24/7 ({info.hotline})</span>
             </a>
           </div>

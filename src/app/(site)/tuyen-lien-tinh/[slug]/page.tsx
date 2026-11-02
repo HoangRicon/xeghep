@@ -161,7 +161,7 @@ export default async function RouteDetailPage({ params }: Props) {
                     href={info.hotlineHref}
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-sm sm:text-base shadow-lg shadow-red-600/30 transition-all hover:scale-105"
                   >
-                    <PhoneCall className="w-5 h-5 animate-pulse" />
+                    <PhoneCall className="w-5 h-5 animate-pulse pointer-events-none" />
                     <span>GỌI NGAY: {info.hotline}</span>
                   </a>
 

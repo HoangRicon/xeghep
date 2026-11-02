@@ -365,7 +365,7 @@ export function BookingForm({
                 href={info.hotlineHref}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm shadow-md"
               >
-                <Phone className="w-4 h-4 animate-pulse" />
+                <Phone className="w-4 h-4 animate-pulse pointer-events-none" />
                 <span>Hoặc gọi trực tiếp: {info.hotline}</span>
               </a>
             </div>
@@ -634,7 +634,7 @@ export function BookingForm({
                 {/* Số điện thoại */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
+                    <Phone className="w-3.5 h-3.5 text-slate-500 pointer-events-none" />
                     <span>Số điện thoại *</span>
                   </label>
                   <input
