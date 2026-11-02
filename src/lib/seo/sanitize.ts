@@ -474,7 +474,8 @@ export function fillMissingImageDimensions(
 }
 
 /**
- * Validate nội dung trước khi lưu: mỗi `<img>` bắt buộc alt + width + height (FR-D02).
+ * Validate nội dung trước khi lưu: mỗi `<img>` bắt buộc alt (FR-D02).
+ * Width/height được tự động điền bởi fillMissingImageDimensions() nên không cần validate.
  * Trả `true` nếu hợp lệ, ngược lại trả thông báo lỗi tiếng Việt.
  */
 export function validateArticleHtml(
@@ -488,17 +489,6 @@ export function validateArticleHtml(
     const alt = pickAttribute(image, "alt");
     if (alt === null || alt === "") {
       errors.push("Thẻ <img> thiếu alt bắt buộc (FR-D02).");
-      continue;
-    }
-    const width = pickAttribute(image, "width");
-    const height = pickAttribute(image, "height");
-    if (
-      !width ||
-      !Number.isFinite(Number(width)) ||
-      !height ||
-      !Number.isFinite(Number(height))
-    ) {
-      errors.push(`Thẻ <img> "${alt}" phải có width/height dạng số (FR-D02).`);
     }
   }
 
