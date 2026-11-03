@@ -1,4 +1,7 @@
 import type { CollectionConfig } from "payload";
+import sharp from "sharp";
+import path from "path";
+import fs from "fs";
 
 import { isAdminOrEditor, openRead } from "../shared/access";
 
@@ -24,6 +27,58 @@ const mediaUrlHooks = {
   ],
 };
 
+/**
+ * Hook tự động convert ảnh upload sang WebP.
+ * - Nếu ảnh đã là WebP/AVIF: giữ nguyên
+ * - Nếu ảnh là JPG/PNG: convert sang WebP với quality 85
+ */
+const convertToWebpHook = async ({ data, req }: any) => {
+  if (!data || !data.filename) return data;
+
+  const filename: string = data.filename;
+  const ext = path.extname(filename).toLowerCase();
+
+  // Chỉ convert JPG/PNG sang WebP
+  if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+    return data;
+  }
+
+  // Tìm file ảnh trong staticDir
+  const staticDir = process.env.PAYLOAD_MEDIA_DIR || "media";
+  const filePath = path.join(staticDir, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return data;
+  }
+
+  try {
+    // Đọc ảnh và convert sang WebP
+    const webpBuffer = await sharp(filePath)
+      .webp({ quality: 85, effort: 4 })
+      .toBuffer();
+
+    // Xóa file gốc
+    fs.unlinkSync(filePath);
+
+    // Tạo filename mới với extension .webp
+    const webpFilename = filename.replace(/\.[^.]+$/, ".webp");
+    const webpPath = path.join(staticDir, webpFilename);
+
+    // Ghi file WebP
+    fs.writeFileSync(webpPath, webpBuffer);
+
+    // Cập nhật data
+    data.filename = webpFilename;
+    data.mimeType = "image/webp";
+
+    req.payload.logger?.info?.(`[Media] Converted ${filename} → ${webpFilename}`);
+  } catch (err) {
+    req.payload.logger?.error?.(`[Media] WebP conversion failed: ${err}`);
+  }
+
+  return data;
+};
+
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
@@ -33,6 +88,8 @@ export const Media: CollectionConfig = {
     update: ({ req }) => isAdminOrEditor({ req }),
   },
   hooks: {
+    // Convert ảnh sang WebP trước khi lưu
+    beforeChange: [convertToWebpHook],
     // URL của các size (`sizes.card.url`…) do Payload sinh ra dưới `/api/media/file/*`.
     // Hook collection chạy SAU field hooks → chuẩn hóa về `/media/*` (KHÔNG dưới /api/,
     // robots Disallow /api/, Constitution §2.1 / plan AD-5).

@@ -92,6 +92,79 @@ export function SeoPreview({
   const isDescOptimal = descLength >= 100 && descLength <= 160;
   const isDescShort = descLength > 0 && descLength < 100;
 
+  // Tính điểm SEO (0-100) giống Yoast
+  const calculateSeoScore = () => {
+    let score = 0;
+    let issues: string[] = [];
+    let improvements: string[] = [];
+
+    // Tiêu đề (40 điểm)
+    if (title) {
+      if (isTitleOptimal) {
+        score += 40;
+      } else if (isTitleShort) {
+        score += 20;
+        issues.push("Tiêu đề hơi ngắn (< 40 ký tự)");
+      } else if (isTitleOver) {
+        score += 10;
+        issues.push("Tiêu đề quá dài (> 70 ký tự)");
+      }
+    } else {
+      issues.push("Chưa có tiêu đề SEO");
+    }
+
+    // Mô tả (40 điểm)
+    if (description) {
+      if (isDescOptimal) {
+        score += 40;
+      } else if (isDescShort) {
+        score += 20;
+        issues.push("Mô tả hơi ngắn (< 100 ký tự)");
+      } else if (isDescOver) {
+        score += 10;
+        issues.push("Mô tả quá dài (> 160 ký tự)");
+      }
+    } else {
+      issues.push("Chưa có mô tả SEO");
+    }
+
+    // Slug (10 điểm)
+    if (slug && slug.length > 0) {
+      score += 10;
+    } else {
+      issues.push("Chưa có slug");
+    }
+
+    // OG Image (10 điểm)
+    if (ogImage) {
+      score += 10;
+    } else {
+      improvements.push("Nên thêm ảnh OG để tăng CTR khi chia sẻ");
+    }
+
+    return { score, issues, improvements };
+  };
+
+  const seoAnalysis = calculateSeoScore();
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-emerald-600";
+    if (score >= 60) return "text-amber-600";
+    return "text-rose-600";
+  };
+
+  const getScoreBg = (score: number) => {
+    if (score >= 80) return "bg-emerald-500";
+    if (score >= 60) return "bg-amber-500";
+    return "bg-rose-500";
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 80) return "Tốt";
+    if (score >= 60) return "Cần cải thiện";
+    return "Kém";
+  };
+
   return (
     <Card className="p-5 space-y-5" data-testid="seo-preview-card">
       {/* Header và Tab Switcher */}
@@ -103,35 +176,81 @@ export function SeoPreview({
           </h3>
         </div>
 
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
-          <button
-            type="button"
-            onClick={() => setActiveTab("serp")}
-            className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
-              activeTab === "serp"
-                ? "bg-blue-600 text-white shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
-            }`}
-            data-testid="tab-serp-btn"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            Google Tìm kiếm
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("social")}
-            className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
-              activeTab === "social"
-                ? "bg-blue-600 text-white shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
-            }`}
-            data-testid="tab-social-btn"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            Mạng xã hội (OG)
-          </button>
+        <div className="flex items-center gap-3">
+          {/* SEO Score Badge */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${getScoreBg(seoAnalysis.score)} text-white`}>
+            <span className="text-xs font-bold">{seoAnalysis.score}/100</span>
+            <span className="text-[10px] opacity-90">{getScoreLabel(seoAnalysis.score)}</span>
+          </div>
+
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("serp")}
+              className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "serp"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+              data-testid="tab-serp-btn"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              Google Tìm kiếm
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("social")}
+              className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "social"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+              data-testid="tab-social-btn"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              Mạng xã hội (OG)
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* SEO Analysis Panel */}
+      {(seoAnalysis.issues.length > 0 || seoAnalysis.improvements.length > 0) && (
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <h4 className="text-xs font-bold text-slate-900 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600" />
+            Phân tích SEO ({seoAnalysis.score}/100)
+          </h4>
+
+          {seoAnalysis.issues.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold text-rose-600">⚠️ Vấn đề cần sửa:</p>
+              <ul className="space-y-1">
+                {seoAnalysis.issues.map((issue, i) => (
+                  <li key={i} className="text-[11px] text-rose-700 flex items-start gap-1.5">
+                    <span className="text-rose-500 mt-0.5">•</span>
+                    <span>{issue}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {seoAnalysis.improvements.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold text-amber-600">💡 Cải thiện thêm:</p>
+              <ul className="space-y-1">
+                {seoAnalysis.improvements.map((imp, i) => (
+                  <li key={i} className="text-[11px] text-amber-700 flex items-start gap-1.5">
+                    <span className="text-amber-500 mt-0.5">•</span>
+                    <span>{imp}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* THANH ĐO ĐỘ DÀI TIÊU ĐỀ & MÔ TẢ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
