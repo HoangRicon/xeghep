@@ -100,10 +100,13 @@ export default async function RootLayout({
       <head>
         <meta charSet="UTF-8" />
         {/* Tracking scripts từ admin */}
-        {tracking.headScripts.map((script, i) => (
+        {tracking.headExternalScripts.map((src, i) => (
+          <script key={`tracking-ext-${i}`} src={src} async />
+        ))}
+        {tracking.headInlineScripts.map((js, i) => (
           <script
-            key={`tracking-head-${i}`}
-            dangerouslySetInnerHTML={{ __html: script }}
+            key={`tracking-inline-${i}`}
+            dangerouslySetInnerHTML={{ __html: js }}
           />
         ))}
 
