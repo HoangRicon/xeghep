@@ -445,7 +445,7 @@ export function BookingForm({
                     placeholder="Điểm đi (Hà Nội, Hải Phòng...)"
                     aria-label="Điểm đi"
                     required
-                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
+                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
                       isGlass ? "bg-white/95" : "bg-white"
                     }`}
                   />
@@ -519,7 +519,7 @@ export function BookingForm({
                     placeholder="Điểm đến (Hạ Long, Móng Cái...)"
                     aria-label="Điểm đến"
                     required
-                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
+                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
                       isGlass ? "bg-white/95" : "bg-white"
                     }`}
                   />
@@ -570,7 +570,7 @@ export function BookingForm({
                     }}
                     placeholder="Chọn ngày & giờ"
                     ariaLabel="Ngày đi"
-                    iconClassName="w-4 h-4 text-slate-400"
+                    iconClassName="w-4 h-4 text-slate-500"
                     className={`h-11 sm:h-12 border border-slate-300 font-medium text-xs sm:text-sm pl-3 sm:pl-3.5 pr-3 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-500 ${
                       isGlass ? "bg-white/95" : "bg-white"
                     }`}
@@ -592,7 +592,7 @@ export function BookingForm({
                         isGlass ? "bg-white/95" : "bg-white"
                       } ${!serviceOption ? "text-slate-500" : "text-slate-900"}`}
                     >
-                      <option value="" disabled className="text-slate-400">
+                      <option value="" disabled className="text-slate-500">
                         Chọn số người/ghế
                       </option>
                       {rideType === "ghep" ? (
@@ -627,7 +627,7 @@ export function BookingForm({
                         </>
                       )}
                     </select>
-                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-4 h-4 text-slate-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
 
@@ -648,7 +648,7 @@ export function BookingForm({
                     placeholder="Ví dụ: 0962298293"
                     aria-label="Số điện thoại của bạn"
                     required
-                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
+                    className={`w-full h-11 sm:h-12 text-slate-900 font-medium text-xs sm:text-sm px-3 sm:px-4 rounded-xl border border-slate-300 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm transition-all ${
                       isGlass ? "bg-white/95" : "bg-white"
                     } ${phoneError ? "border-red-500 ring-1 ring-red-400" : ""}`}
                   />

@@ -112,6 +112,17 @@ export default async function RootLayout({
     <html lang="vi" className={fontSans.variable}>
       <head>
         <meta charSet="UTF-8" />
+        
+        {/* Preload LCP image for faster rendering */}
+        {companySettings.info.heroImageUrl && (
+          <link
+            rel="preload"
+            as="image"
+            href={companySettings.info.heroImageUrl}
+            fetchPriority="high"
+          />
+        )}
+        
         {/* Tracking scripts từ admin */}
         {tracking.headExternalScripts.map((src, i) => (
           <script key={`tracking-ext-${i}`} src={src} async />

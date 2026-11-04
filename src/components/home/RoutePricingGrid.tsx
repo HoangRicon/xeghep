@@ -48,9 +48,9 @@ export function RoutePricingCard({
 
         {/* Route Title */}
         <Link href={`/tuyen-lien-tinh/${route.slug}`} className="block">
-          <h3 className="text-[13px] sm:text-base font-black uppercase tracking-tight leading-snug text-white line-clamp-2 min-h-[2.25rem] sm:min-h-[2.5rem] drop-shadow group-hover:text-amber-300 transition-colors">
+          <h2 className="text-[13px] sm:text-base font-black uppercase tracking-tight leading-snug text-white line-clamp-2 min-h-[2.25rem] sm:min-h-[2.5rem] drop-shadow group-hover:text-amber-300 transition-colors">
             {route.name}
-          </h3>
+          </h2>
         </Link>
 
         {/* BẢNG GIÁ CHI TIẾT */}

@@ -20,6 +20,7 @@ export function HeroSection({ companyInfo = COMPANY_INFO }: HeroSectionProps) {
         width={info.heroImageWidth}
         height={info.heroImageHeight}
         priority
+        fetchPriority="high"
         sizes="100vw"
         quality={85}
         className="block h-auto w-full"

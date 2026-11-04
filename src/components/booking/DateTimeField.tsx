@@ -158,7 +158,7 @@ export function DateTimeField({
       >
         <span
           className={`block min-w-0 flex-1 truncate ${
-            value ? "text-slate-900" : "text-slate-400"
+            value ? "text-slate-900" : "text-slate-500"
           }`}
         >
           {value ? formatDisplay(value) : placeholder}

@@ -111,6 +111,16 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Long-term cache for static assets (images, fonts)
+      {
+        source: "/:path*.(avif|webp|jpg|jpeg|png|gif|svg|woff2|woff|ttf)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
       // CORS cho payload REST (giữ từ backend; bỏ x-revalidate-secret — webhook đã xóa)
       {
         source: "/api/:path*",
