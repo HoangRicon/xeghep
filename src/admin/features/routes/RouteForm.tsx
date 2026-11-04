@@ -482,84 +482,85 @@ export function RouteForm() {
 
   return (
     <div className="pb-16" data-testid="route-form-page">
-      {/* Header bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-          <div className="flex items-center gap-3">
-            <Link
-              to="/routes"
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
-              title="Quay lại danh sách tuyến"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                  {isViewMode
-                    ? 'Chi tiết tuyến đường'
-                    : isEdit
-                    ? 'Chỉnh sửa tuyến đường'
-                    : 'Thêm tuyến đường mới'}
-                </h1>
-                <Badge variant={form.status === 'active' ? 'success' : 'secondary'} size="sm">
-                  {form.status === 'active' ? 'Hoạt động' : form.status === 'draft' ? 'Bản nháp' : 'Lưu trữ'}
-                </Badge>
-                {isViewMode && (
-                  <Badge variant="outline" size="sm" className="bg-blue-50 text-blue-700 border-blue-200 font-semibold">
-                    Chế độ xem
+      {/* Header bar - Sticky */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+            <div className="flex items-center gap-3">
+              <Link
+                to="/routes"
+                className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
+                title="Quay lại danh sách tuyến"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                    {isViewMode
+                      ? 'Chi tiết tuyến đường'
+                      : isEdit
+                      ? 'Chỉnh sửa tuyến đường'
+                      : 'Thêm tuyến đường mới'}
+                  </h1>
+                  <Badge variant={form.status === 'active' ? 'success' : 'secondary'} size="sm">
+                    {form.status === 'active' ? 'Hoạt động' : form.status === 'draft' ? 'Bản nháp' : 'Lưu trữ'}
                   </Badge>
-                )}
+                  {isViewMode && (
+                    <Badge variant="outline" size="sm" className="bg-blue-50 text-blue-700 border-blue-200 font-semibold">
+                      Chế độ xem
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {isViewMode
+                    ? `ID: #${id} — Xem chi tiết cấu hình giá cước và thông tin tuyến đường`
+                    : isEdit
+                    ? `ID: #${id} — Cập nhật cấu hình bảng giá và thông tin tuyến`
+                    : 'Thiết lập đầy đủ thông tin cước và SEO cho tuyến liên tỉnh'}
+                </p>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                {isViewMode
-                  ? `ID: #${id} — Xem chi tiết cấu hình giá cước và thông tin tuyến đường`
-                  : isEdit
-                  ? `ID: #${id} — Cập nhật cấu hình bảng giá và thông tin tuyến`
-                  : 'Thiết lập đầy đủ thông tin cước và SEO cho tuyến liên tỉnh'}
-              </p>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2.5">
-            {/* Preview Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowPreview(!showPreview)}
-              className={`p-2 rounded-lg border transition cursor-pointer ${
-                showPreview
-                  ? 'bg-blue-50 border-blue-200 text-blue-700'
-                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
-              }`}
-              title={showPreview ? 'Ẩn xem trước' : 'Hiện xem trước'}
-            >
-              {showPreview ? (
-                <PanelRightClose className="w-4 h-4" />
-              ) : (
-                <PanelRightOpen className="w-4 h-4" />
-              )}
-            </button>
+            <div className="flex items-center gap-2.5">
+              {/* Preview Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowPreview(!showPreview)}
+                className={`p-2 rounded-lg border transition cursor-pointer ${
+                  showPreview
+                    ? 'bg-blue-50 border-blue-200 text-blue-700'
+                    : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                }`}
+                title={showPreview ? 'Ẩn xem trước' : 'Hiện xem trước'}
+              >
+                {showPreview ? (
+                  <PanelRightClose className="w-4 h-4" />
+                ) : (
+                  <PanelRightOpen className="w-4 h-4" />
+                )}
+              </button>
 
-            {isViewMode ? (
-            <Button
-              type="button"
-              variant="default"
-              onClick={() => {
-                setSearchParams({});
-                navigate(`/routes/${id}`);
-              }}
-              className="cursor-pointer shadow-md shadow-blue-500/20"
-              data-testid="switch-to-edit-btn"
-            >
-              <Edit className="w-4 h-4 mr-1.5" />
-              <span>Chỉnh sửa tuyến này</span>
-            </Button>
-          ) : (
-            <>
+              {isViewMode ? (
               <Button
                 type="button"
-                variant="outline"
-                onClick={() => handleSubmit('draft')}
+                variant="default"
+                onClick={() => {
+                  setSearchParams({});
+                  navigate(`/routes/${id}`);
+                }}
+                className="cursor-pointer shadow-md shadow-blue-500/20"
+                data-testid="switch-to-edit-btn"
+              >
+                <Edit className="w-4 h-4 mr-1.5" />
+                <span>Chỉnh sửa tuyến này</span>
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleSubmit('draft')}
                 disabled={isSubmitting}
                 className="cursor-pointer"
                 data-testid="save-draft-btn"
@@ -586,7 +587,7 @@ export function RouteForm() {
             </>
           )}
         </div>
-      </div>
+        </div>
       </div>
 
       {/* Two-column layout with preview */}
@@ -596,7 +597,7 @@ export function RouteForm() {
           <div className={`${showPreview ? 'flex-1 min-w-0' : 'w-full'} space-y-6 mt-6`}>
 
       {/* Tab Navigation */}
-      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 -mx-4 sm:-mx-0 px-4 sm:px-0">
+      <div className="sticky top-[73px] z-10 bg-white/95 backdrop-blur-sm border-b border-slate-200 -mx-4 sm:-mx-0 px-4 sm:px-0">
         <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-thin">
           <button
             type="button"
@@ -1493,69 +1494,13 @@ export function RouteForm() {
       </div>
       )}
 
-      {/* FOOTER ACTIONS */}
-      <div className="flex items-center justify-between border-t border-slate-200 pt-5">
-        <Link
-          to="/routes"
-          className="text-xs text-slate-500 hover:text-slate-800 transition cursor-pointer flex items-center gap-1.5"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Quay lại danh sách tuyến</span>
-        </Link>
-
-        {isViewMode ? (
-          <Button
-            type="button"
-            variant="default"
-            onClick={() => {
-              setSearchParams({});
-              navigate(`/routes/${id}`);
-            }}
-            className="cursor-pointer shadow-md shadow-blue-500/20"
-            data-testid="bottom-switch-to-edit-btn"
-          >
-            <Edit className="w-4 h-4 mr-1.5" />
-            <span>Chuyển sang Chỉnh sửa</span>
-          </Button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSubmit('draft')}
-              disabled={isSubmitting}
-              className="cursor-pointer"
-            >
-              <Save className="w-4 h-4 mr-1.5" />
-              <span>Lưu nháp</span>
-            </Button>
-
-            <Button
-              type="button"
-              variant="default"
-              onClick={() => handleSubmit()}
-              disabled={isSubmitting}
-              className="cursor-pointer shadow-md shadow-blue-500/20"
-              data-testid="submit-bottom-btn"
-            >
-              {isSubmitting ? (
-                <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4 mr-1.5" />
-              )}
-              <span>{isEdit ? 'Cập nhật tuyến' : 'Tạo tuyến đường'}</span>
-            </Button>
-          </div>
-        )}
-      </div>
-
           </div>
           {/* End Main Form Column */}
 
           {/* Preview Column */}
           {showPreview && (
           <div className="w-full lg:w-96 lg:shrink-0 mt-6">
-            <div className="sticky top-20">
+            <div className="sticky top-[89px]">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                   <Eye className="w-4 h-4" />
@@ -1593,10 +1538,70 @@ export function RouteForm() {
           </div>
           )}
         </div>
+        </div>
       </div>
 
-      {/* Media Picker cho Thumbnail */}
-      <MediaPickerModal
+      {/* Sticky Footer Actions */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-sm border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-between">
+            <Link
+              to="/routes"
+              className="text-xs text-slate-500 hover:text-slate-800 transition cursor-pointer flex items-center gap-1.5"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Quay lại danh sách tuyến</span>
+            </Link>
+
+            {isViewMode ? (
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => {
+                  setSearchParams({});
+                  navigate(`/routes/${id}`);
+                }}
+                className="cursor-pointer shadow-md shadow-blue-500/20"
+                data-testid="bottom-switch-to-edit-btn"
+              >
+                <Edit className="w-4 h-4 mr-1.5" />
+                <span>Chuyển sang Chỉnh sửa</span>
+              </Button>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleSubmit('draft')}
+                  disabled={isSubmitting}
+                  className="cursor-pointer"
+                >
+                  <Save className="w-4 h-4 mr-1.5" />
+                  <span>Lưu nháp</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => handleSubmit()}
+                  disabled={isSubmitting}
+                  className="cursor-pointer shadow-md shadow-blue-500/20"
+                  data-testid="submit-bottom-btn"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4 mr-1.5" />
+                  )}
+                  <span>{isEdit ? 'Cập nhật tuyến' : 'Tạo tuyến đường'}</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Media Picker cho Thumbnail */}      <MediaPickerModal
         isOpen={isThumbnailModalOpen}
         onClose={() => setIsThumbnailModalOpen(false)}
         onSelect={(media) => {
