@@ -14,6 +14,14 @@ import {
   Trash2,
   Edit,
   Share2,
+  Info,
+  DollarSign,
+  MapPin,
+  ImageIcon as ImageIcon2,
+  Settings,
+  Eye,
+  PanelRightClose,
+  PanelRightOpen,
 } from 'lucide-react';
 import { Button } from '@/admin/components/ui/Button';
 import { Input } from '@/admin/components/ui/Input';
@@ -24,6 +32,7 @@ import { Badge } from '@/admin/components/ui/Badge';
 import { MediaPickerModal } from '@/admin/components/common/MediaPickerModal';
 import { SeoPreview } from '@/admin/components/common/SeoPreview';
 import { PricingTiersSection, computePriceFrom, type PricingTiersState } from './PricingTiersSection';
+import { RoutePreview } from './RoutePreview';
 import { apiClient, getApiErrorMessage } from '@/admin/lib/api-client';
 import { slugify } from '@/admin/lib/utils';
 import type { RouteDoc, RouteRegion, RouteStatus, RouteFaq, LocationAlias } from '@/admin/types/routes';
@@ -131,6 +140,15 @@ export function RouteForm() {
   // Modals chọn ảnh
   const [isThumbnailModalOpen, setIsThumbnailModalOpen] = useState(false);
   const [isOgMediaModalOpen, setIsOgMediaModalOpen] = useState(false);
+
+  // Tab navigation
+  const [activeTab, setActiveTab] = useState<'info' | 'pricing' | 'locations' | 'media' | 'config'>('info');
+
+  // Preview panel
+  const [showPreview, setShowPreview] = useState(true);
+
+  // Computed price for preview
+  const computedPriceForPreview = useMemo(() => computePriceFrom(form.pricing), [form.pricing]);
 
   // Nạp dữ liệu khi chỉnh sửa
   const fetchRoute = useCallback(async () => {
@@ -463,47 +481,66 @@ export function RouteForm() {
   }
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-16" data-testid="route-form-page">
+    <div className="pb-16" data-testid="route-form-page">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/routes"
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
-            title="Quay lại danh sách tuyến"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {isViewMode
-                  ? 'Chi tiết tuyến đường'
-                  : isEdit
-                  ? 'Chỉnh sửa tuyến đường'
-                  : 'Thêm tuyến đường mới'}
-              </h1>
-              <Badge variant={form.status === 'active' ? 'success' : 'secondary'} size="sm">
-                {form.status === 'active' ? 'Hoạt động' : form.status === 'draft' ? 'Bản nháp' : 'Lưu trữ'}
-              </Badge>
-              {isViewMode && (
-                <Badge variant="outline" size="sm" className="bg-blue-50 text-blue-700 border-blue-200 font-semibold">
-                  Chế độ xem
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/routes"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
+              title="Quay lại danh sách tuyến"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                  {isViewMode
+                    ? 'Chi tiết tuyến đường'
+                    : isEdit
+                    ? 'Chỉnh sửa tuyến đường'
+                    : 'Thêm tuyến đường mới'}
+                </h1>
+                <Badge variant={form.status === 'active' ? 'success' : 'secondary'} size="sm">
+                  {form.status === 'active' ? 'Hoạt động' : form.status === 'draft' ? 'Bản nháp' : 'Lưu trữ'}
                 </Badge>
-              )}
+                {isViewMode && (
+                  <Badge variant="outline" size="sm" className="bg-blue-50 text-blue-700 border-blue-200 font-semibold">
+                    Chế độ xem
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {isViewMode
+                  ? `ID: #${id} — Xem chi tiết cấu hình giá cước và thông tin tuyến đường`
+                  : isEdit
+                  ? `ID: #${id} — Cập nhật cấu hình bảng giá và thông tin tuyến`
+                  : 'Thiết lập đầy đủ thông tin cước và SEO cho tuyến liên tỉnh'}
+              </p>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {isViewMode
-                ? `ID: #${id} — Xem chi tiết cấu hình giá cước và thông tin tuyến đường`
-                : isEdit
-                ? `ID: #${id} — Cập nhật cấu hình bảng giá và thông tin tuyến`
-                : 'Thiết lập đầy đủ thông tin cước và SEO cho tuyến liên tỉnh'}
-            </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2.5">
-          {isViewMode ? (
+          <div className="flex items-center gap-2.5">
+            {/* Preview Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              className={`p-2 rounded-lg border transition cursor-pointer ${
+                showPreview
+                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                  : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+              }`}
+              title={showPreview ? 'Ẩn xem trước' : 'Hiện xem trước'}
+            >
+              {showPreview ? (
+                <PanelRightClose className="w-4 h-4" />
+              ) : (
+                <PanelRightOpen className="w-4 h-4" />
+              )}
+            </button>
+
+            {isViewMode ? (
             <Button
               type="button"
               variant="default"
@@ -550,6 +587,79 @@ export function RouteForm() {
           )}
         </div>
       </div>
+      </div>
+
+      {/* Two-column layout with preview */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`flex gap-6 ${showPreview ? 'flex-col lg:flex-row' : ''}`}>
+          {/* Main Form Column */}
+          <div className={`${showPreview ? 'flex-1 min-w-0' : 'w-full'} space-y-6 mt-6`}>
+
+      {/* Tab Navigation */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 -mx-4 sm:-mx-0 px-4 sm:px-0">
+        <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-thin">
+          <button
+            type="button"
+            onClick={() => setActiveTab('info')}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer whitespace-nowrap ${
+              activeTab === 'info'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+            }`}
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>Thông tin cơ bản</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('pricing')}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer whitespace-nowrap ${
+              activeTab === 'pricing'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+            }`}
+          >
+            <DollarSign className="w-3.5 h-3.5" />
+            <span>Bảng giá & Vé</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('locations')}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer whitespace-nowrap ${
+              activeTab === 'locations'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+            }`}
+          >
+            <MapPin className="w-3.5 h-3.5" />
+            <span>Điểm đón/trả & FAQ</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('media')}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer whitespace-nowrap ${
+              activeTab === 'media'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+            }`}
+          >
+            <ImageIcon2 className="w-3.5 h-3.5" />
+            <span>Ảnh & SEO</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('config')}
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer whitespace-nowrap ${
+              activeTab === 'config'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+            }`}
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Cấu hình</span>
+          </button>
+        </div>
+      </div>
 
       {/* Thông báo lỗi nếu có */}
       {apiError && (
@@ -592,6 +702,7 @@ export function RouteForm() {
       )}
 
       {/* KHỐI 1: THÔNG TIN CƠ BẢN */}
+      {activeTab === 'info' && (
       <Card className="p-6 space-y-5">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-2">
           Thông tin cơ bản tuyến đường
@@ -726,8 +837,11 @@ export function RouteForm() {
           />
         </div>
       </Card>
+      )}
 
       {/* KHỐI 2: BANNER TOP, THỨ TỰ & VÙNG MIỀN */}
+      {activeTab === 'config' && (
+      <>
       <Card className="p-6 space-y-5">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-2">
           Hiển thị Banner Top & Khu vực
@@ -874,8 +988,11 @@ export function RouteForm() {
           />
         </div>
       </Card>
+      </>
+      )}
 
       {/* KHỐI 4: CẤU HÌNH 4 HẠNG VÉ (PRICING TIERS SECTION) */}
+      {activeTab === 'pricing' && (
       <Card className="p-6">
         <div role="tablist" aria-label="Cách nhập bảng giá" className="flex gap-2 border-b border-slate-200 mb-5">
           <button
@@ -959,8 +1076,10 @@ export function RouteForm() {
           </div>
         )}
       </Card>
+      )}
 
       {/* KHỐI 5: ẢNH THUMBNAIL ĐẠI DIỆN */}
+      {activeTab === 'media' && (
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-2">
           Ảnh thumbnail đại diện tuyến
@@ -1012,8 +1131,10 @@ export function RouteForm() {
           </div>
         </div>
       </Card>
+      )}
 
       {/* KHỐI 6: ĐIỂM ĐÓN & ĐIỂM TRẢ */}
+      {activeTab === 'locations' && (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Điểm đón */}
         <Card className="p-6 space-y-4">
@@ -1117,8 +1238,10 @@ export function RouteForm() {
           </div>
         </Card>
       </div>
+      )}
 
       {/* KHỐI 7: CÂU HỎI THƯỜNG GẶP (FAQS) */}
+      {activeTab === 'locations' && (
       <Card className="p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-slate-200 pb-2">
           <div>
@@ -1198,8 +1321,10 @@ export function RouteForm() {
           </div>
         )}
       </Card>
+      )}
 
       {/* KHỐI 8: CẤU HÌNH SEO & XEM TRƯỚC */}
+      {activeTab === 'media' && (
       <div className="space-y-4">
         <Card className="p-6 space-y-4">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-700 border-b border-slate-200 pb-2">
@@ -1366,6 +1491,7 @@ export function RouteForm() {
           appendBrand={form.seo.appendBrand}
         />
       </div>
+      )}
 
       {/* FOOTER ACTIONS */}
       <div className="flex items-center justify-between border-t border-slate-200 pt-5">
@@ -1421,6 +1547,52 @@ export function RouteForm() {
             </Button>
           </div>
         )}
+      </div>
+
+          </div>
+          {/* End Main Form Column */}
+
+          {/* Preview Column */}
+          {showPreview && (
+          <div className="w-full lg:w-96 lg:shrink-0 mt-6">
+            <div className="sticky top-20">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  Xem trước
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(false)}
+                  className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                  title="Đóng xem trước"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <RoutePreview
+                data={{
+                  name: form.name,
+                  slug: form.slug,
+                  origin: form.origin,
+                  destination: form.destination,
+                  distance: form.distance,
+                  duration: form.duration,
+                  description: form.description,
+                  status: form.status,
+                  regions: form.regions,
+                  priceFrom: computedPriceForPreview,
+                  thumbnailUrl: form.thumbnail?.url,
+                  operatingHoursText: form.operatingHoursText,
+                  frequencyText: form.frequencyText,
+                  pickups: form.pickups,
+                  dropoffs: form.dropoffs,
+                }}
+              />
+            </div>
+          </div>
+          )}
+        </div>
       </div>
 
       {/* Media Picker cho Thumbnail */}

@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     routes: Route;
+    'article-categories': ArticleCategory;
     articles: Article;
     pages: Page;
     bookings: Booking;
@@ -86,6 +87,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     routes: RoutesSelect<false> | RoutesSelect<true>;
+    'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
@@ -186,13 +188,21 @@ export interface User {
 export interface Media {
   id: number;
   /**
+   * Tên mô tả ngắn gọn cho ảnh — dùng cho SEO và quản lý.
+   */
+  title?: string | null;
+  /**
    * Mô tả nội dung ảnh — bắt buộc cho a11y và SEO ảnh.
    */
   alt: string;
   /**
-   * Để trống nếu không cần chú thích.
+   * Hiển thị dưới ảnh trên trang web. Để trống nếu không cần.
    */
   caption?: string | null;
+  /**
+   * Mô tả dài hơn cho ảnh — dùng cho trang chi tiết hoặc SEO.
+   */
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -484,6 +494,33 @@ export interface Route {
      */
     noindex?: boolean | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Danh mục bài viết - quản lý linh hoạt từ admin.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories".
+ */
+export interface ArticleCategory {
+  id: number;
+  /**
+   * Ví dụ: Kinh nghiệm đi xe, Tin tuyến & Báo giá, Khuyến mãi
+   */
+  name: string;
+  /**
+   * Tự sinh từ tên danh mục khi để trống. Dùng cho URL.
+   */
+  slug: string;
+  /**
+   * Mô tả ngắn về danh mục (optional).
+   */
+  description?: string | null;
+  /**
+   * Tự động đếm số bài viết trong danh mục này.
+   */
+  articleCount?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -825,6 +862,10 @@ export interface PayloadLockedDocument {
         value: number | Route;
       } | null)
     | ({
+        relationTo: 'article-categories';
+        value: number | ArticleCategory;
+      } | null)
+    | ({
         relationTo: 'articles';
         value: number | Article;
       } | null)
@@ -920,8 +961,10 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  title?: T;
   alt?: T;
   caption?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1085,6 +1128,18 @@ export interface RoutesSelect<T extends boolean = true> {
         ogImage?: T;
         noindex?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories_select".
+ */
+export interface ArticleCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  articleCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1386,23 +1441,53 @@ export interface CompanySetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Quản lý tất cả mã theo dõi (GTM, Google Ads, Facebook Pixel...). Bật dịch vụ cần dùng và điền ID — hệ thống tự động chèn code đúng chuẩn vào website.
+   */
   tracking?: {
+    /**
+     * Trình quản lý thẻ của Google. Bật và điền Container ID để tự động chèn GTM script + noscript vào mọi trang.
+     */
     googleTagManager?: {
       enabled?: boolean | null;
+      /**
+       * Ví dụ: GTM-TFN9JF6S (lấy từ Google Tag Manager → Admin → Container ID)
+       */
       containerId?: string | null;
-    } | null;
+    };
+    /**
+     * Theo dõi chuyển đổi Google Ads. Bật và điền Conversion ID + Label để ghi nhận lượt click nút Gọi.
+     */
     googleAds?: {
       enabled?: boolean | null;
+      /**
+       * Ví dụ: AW-18539707592 (lấy từ Google Ads → Chuyển đổi → Thẻ)
+       */
       conversionId?: string | null;
+      /**
+       * Ví dụ: AW-18539707592/AbCdEfGhIjK (chỉ cần phần sau send_to:)
+       */
       conversionLabel?: string | null;
-    } | null;
+    };
+    /**
+     * Theo dõi chuyển đổi Facebook/Meta. Bật và điền Pixel ID để tự động chèn base code.
+     */
     facebookPixel?: {
       enabled?: boolean | null;
+      /**
+       * Ví dụ: 123456789012345 (lấy từ Facebook Events Manager → Pixel ID)
+       */
       pixelId?: string | null;
-    } | null;
+    };
+    /**
+     * Dán thêm script/meta tùy ý vào <head> (ví dụ: xác minh Google Search Console, meta tag đặc biệt). Mỗi script trên một dòng.
+     */
     customHeadScripts?: string | null;
+    /**
+     * Dán thêm script vào cuối <body> (ví dụ: chat widget, pixel đặc biệt).
+     */
     customBodyScripts?: string | null;
-  } | null;
+  };
   /**
    * Tính từ "Hotline (số thuần)" lúc đọc, ví dụ tel:+84962298293 — không lưu DB (FR-D10).
    */
@@ -1621,6 +1706,31 @@ export interface CompanySettingsSelect<T extends boolean = true> {
         avatarText?: T;
         isVisible?: T;
         id?: T;
+      };
+  tracking?:
+    | T
+    | {
+        googleTagManager?:
+          | T
+          | {
+              enabled?: T;
+              containerId?: T;
+            };
+        googleAds?:
+          | T
+          | {
+              enabled?: T;
+              conversionId?: T;
+              conversionLabel?: T;
+            };
+        facebookPixel?:
+          | T
+          | {
+              enabled?: T;
+              pixelId?: T;
+            };
+        customHeadScripts?: T;
+        customBodyScripts?: T;
       };
   hotlineHref?: T;
   zaloHref?: T;
