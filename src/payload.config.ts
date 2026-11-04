@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { fileURLToPath } from "url";
 
 import { AirportPricing } from "./collections/AirportPricing";
+import { ArticleCategories } from "./collections/ArticleCategories";
 import { Articles } from "./collections/Articles";
 import { Bookings } from "./collections/Bookings";
 import { DistanceRates } from "./collections/DistanceRates";
@@ -121,6 +122,7 @@ export default buildConfig({
     Users,
     Media,
     Routes,
+    ArticleCategories,
     Articles,
     Pages,
     Bookings,

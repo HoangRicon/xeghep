@@ -6,6 +6,7 @@ import { DashboardOverview } from '@/admin/features/dashboard';
 import { MediaGallery } from '@/admin/features/media';
 import { RouteList, RouteForm } from '@/admin/features/routes';
 import { ArticleList, ArticleForm } from '@/admin/features/articles';
+import { CategoryList, CategoryForm } from '@/admin/features/categories';
 import { PageList, PageForm } from '@/admin/features/pages';
 import { BookingList } from '@/admin/features/bookings';
 import { SettingsPage } from '@/admin/features/settings';
@@ -101,6 +102,32 @@ export function AppRoutes() {
             element={
               <RoleGuard allowedRoles={['admin', 'editor']}>
                 <ArticleForm />
+              </RoleGuard>
+            }
+          />
+
+          {/* Quản trị Danh mục bài viết */}
+          <Route
+            path="/categories"
+            element={
+              <RoleGuard allowedRoles={['admin', 'editor']}>
+                <CategoryList />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/categories/new"
+            element={
+              <RoleGuard allowedRoles={['admin', 'editor']}>
+                <CategoryForm />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/categories/:id"
+            element={
+              <RoleGuard allowedRoles={['admin', 'editor']}>
+                <CategoryForm />
               </RoleGuard>
             }
           />

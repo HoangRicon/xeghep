@@ -272,53 +272,55 @@ export function ArticleForm() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-16">
-      {/* Header Form */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-        <div>
-          <Link
-            to="/articles"
-            className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 font-medium mb-1 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Quay lại danh sách bài viết</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            {isEdit ? 'Chỉnh sửa bài viết' : 'Viết bài mới'}
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {isEdit
-              ? `Cập nhật thông tin cho bài viết #${id} (${initialArticle?.slug})`
-              : 'Soạn thảo nội dung cẩm nang, tin tức và tối ưu hóa SEO Google.'}
-          </p>
-        </div>
+      {/* Header Form - Sticky khi scroll */}
+      <div className="sticky top-0 z-10 bg-white border-b border-slate-200 pb-4 -mx-6 px-6 pt-6 sm:-mx-8 sm:px-8 sm:pt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <Link
+              to="/articles"
+              className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 font-medium mb-1 cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Quay lại danh sách bài viết</span>
+            </Link>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              {isEdit ? 'Chỉnh sửa bài viết' : 'Viết bài mới'}
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {isEdit
+                ? `Cập nhật thông tin cho bài viết #${id} (${initialArticle?.slug})`
+                : 'Soạn thảo nội dung cẩm nang, tin tức và tối ưu hóa SEO Google.'}
+            </p>
+          </div>
 
-        {/* Nút thao tác phía trên */}
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => handleSubmit('draft')}
-            disabled={isSubmitting}
-            data-testid="save-draft-btn"
-            className="cursor-pointer"
-          >
-            <Save className="w-3.5 h-3.5 mr-1.5" />
-            <span>Lưu bản nháp</span>
-          </Button>
+          {/* Nút thao tác phía trên */}
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => handleSubmit('draft')}
+              disabled={isSubmitting}
+              data-testid="save-draft-btn"
+              className="cursor-pointer"
+            >
+              <Save className="w-3.5 h-3.5 mr-1.5" />
+              <span>Lưu bản nháp</span>
+            </Button>
 
-          <Button
-            type="button"
-            variant="default"
-            size="sm"
-            onClick={() => handleSubmit('published')}
-            disabled={isSubmitting}
-            data-testid="publish-btn"
-            className="cursor-pointer shadow-sm"
-          >
-            <Send className="w-3.5 h-3.5 mr-1.5" />
-            <span>Xuất bản ngay</span>
-          </Button>
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              onClick={() => handleSubmit('published')}
+              disabled={isSubmitting}
+              data-testid="publish-btn"
+              className="cursor-pointer shadow-sm"
+            >
+              <Send className="w-3.5 h-3.5 mr-1.5" />
+              <span>Xuất bản ngay</span>
+            </Button>
+          </div>
         </div>
       </div>
 
