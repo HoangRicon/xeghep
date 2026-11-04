@@ -16,7 +16,6 @@ import {
 import { getRoutes, getCompanySettings, getCustomCode } from "@/lib/api";
 import { buildHeadInjectionScript } from "@/lib/custom-code";
 import { buildTrackingScripts } from "@/lib/tracking-scripts";
-import Script from "next/script";
 
 // Đồng bộ lại nội dung Payload/Postgres định kỳ mà không cần build lại toàn bộ site.
 export const revalidate = 60;
@@ -110,12 +109,7 @@ export default async function RootLayout({
           />
         ))}
 
-        {/* AutoAds Tracking Code */}
-        <Script
-          id="autoAdsMaxLead-widget-script"
-          src="https://cdn-onmar.novaontech.com/scripts/autoads-maxlead-widget.js?business_id=1D7025D16F1C4267904CBFA9AF195221"
-          strategy="afterInteractive"
-        />
+        {/* AutoAds widget → chuyển vào CMS Custom Code > Head */}
 
         {customCode.headCode.trim() && (
           <script
