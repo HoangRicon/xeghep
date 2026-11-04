@@ -29,7 +29,6 @@ import type {
   CompanyCommitment,
   CompanyPaymentMethod,
   CompanyTestimonial,
-  CompanyTracking,
   CommitmentIcon,
   PaymentMethodIcon,
   AreaServedItem,

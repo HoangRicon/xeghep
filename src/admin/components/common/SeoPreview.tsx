@@ -95,8 +95,8 @@ export function SeoPreview({
   // Tính điểm SEO (0-100) giống Yoast
   const calculateSeoScore = () => {
     let score = 0;
-    let issues: string[] = [];
-    let improvements: string[] = [];
+    const issues: string[] = [];
+    const improvements: string[] = [];
 
     // Tiêu đề (40 điểm)
     if (title) {
@@ -146,12 +146,6 @@ export function SeoPreview({
   };
 
   const seoAnalysis = calculateSeoScore();
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-emerald-600";
-    if (score >= 60) return "text-amber-600";
-    return "text-rose-600";
-  };
 
   const getScoreBg = (score: number) => {
     if (score >= 80) return "bg-emerald-500";
