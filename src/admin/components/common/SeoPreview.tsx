@@ -7,6 +7,8 @@ import {
   HelpCircle,
   Car,
   Info,
+  Monitor,
+  Smartphone,
 } from "lucide-react";
 import { Card } from "@/admin/components/ui/Card";
 import { SITE_DOMAIN } from "@/lib/seo";
@@ -45,6 +47,7 @@ export function SeoPreview({
   siteDomain,
 }: SeoPreviewProps) {
   const [activeTab, setActiveTab] = useState<"serp" | "social">("serp");
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
 
   const effectiveSiteDomain = siteDomain || SITE_DOMAIN;
   const displayDomainUpper =
@@ -210,6 +213,35 @@ export function SeoPreview({
               Facebook/Zalo
             </button>
           </div>
+
+          {activeTab === "serp" && (
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+              <button
+                type="button"
+                onClick={() => setDevice("desktop")}
+                className={`px-2.5 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1 ${
+                  device === "desktop"
+                    ? "bg-slate-700 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                Desktop
+              </button>
+              <button
+                type="button"
+                onClick={() => setDevice("mobile")}
+                className={`px-2.5 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1 ${
+                  device === "mobile"
+                    ? "bg-slate-700 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                Mobile
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -393,24 +425,32 @@ export function SeoPreview({
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
             <Info className="w-3.5 h-3.5" />
-            <span>Hiển thị trên kết quả tìm kiếm Google (desktop & mobile)</span>
+            <span>Hiển thị trên kết quả tìm kiếm Google ({device === "desktop" ? "Desktop" : "Mobile"})</span>
           </div>
 
           {/* Khung mô phỏng Google Search Card */}
           <div
-            className="p-4 sm:p-5 rounded-2xl bg-white text-slate-900 shadow-md border border-slate-200/80 font-sans max-w-2xl text-left"
+            className={`p-4 sm:p-5 rounded-2xl bg-white text-slate-900 shadow-md border border-slate-200/80 font-sans text-left transition-all duration-300 ${
+              device === "desktop" ? "max-w-2xl" : "max-w-sm mx-auto"
+            }`}
             data-testid="google-serp-preview"
           >
             {/* Header: Favicon + Tên trang + URL */}
             <div className="flex items-center gap-3 mb-1.5">
-              <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-blue-600 border border-slate-200 shrink-0">
-                <Car className="w-4 h-4" />
+              <div className={`rounded-full bg-slate-100 flex items-center justify-center text-blue-600 border border-slate-200 shrink-0 ${
+                device === "desktop" ? "w-7 h-7" : "w-6 h-6"
+              }`}>
+                <Car className={device === "desktop" ? "w-4 h-4" : "w-3.5 h-3.5"} />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-medium text-slate-800 leading-tight">
+                <p className={`font-medium text-slate-800 leading-tight ${
+                  device === "desktop" ? "text-xs" : "text-[11px]"
+                }`}>
                   {siteName}
                 </p>
-                <p className="text-[11px] text-slate-500 font-normal truncate leading-tight">
+                <p className={`text-slate-500 font-normal truncate leading-tight ${
+                  device === "desktop" ? "text-[11px]" : "text-[10px]"
+                }`}>
                   {displayUrl}
                 </p>
               </div>
@@ -418,7 +458,9 @@ export function SeoPreview({
 
             {/* Tiêu đề Google màu xanh lam */}
             <h4
-              className="text-lg text-[#1a0dab] hover:underline font-normal cursor-pointer leading-snug line-clamp-2 mt-1"
+              className={`text-[#1a0dab] hover:underline font-normal cursor-pointer leading-snug line-clamp-2 mt-1 ${
+                device === "desktop" ? "text-lg" : "text-base"
+              }`}
               data-testid="serp-title"
             >
               {effectiveTitle}
@@ -426,7 +468,9 @@ export function SeoPreview({
 
             {/* Mô tả Google màu xám đen */}
             <p
-              className="text-sm text-[#4d5156] leading-relaxed line-clamp-2 mt-1.5"
+              className={`text-[#4d5156] leading-relaxed line-clamp-2 mt-1.5 ${
+                device === "desktop" ? "text-sm" : "text-xs"
+              }`}
               data-testid="serp-description"
             >
               {effectiveDescription}

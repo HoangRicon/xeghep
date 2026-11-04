@@ -210,6 +210,9 @@ export type CmsImage = {
   width: number | null;
   height: number | null;
   alt: string | null;
+  title?: string | null;
+  caption?: string | null;
+  description?: string | null;
 };
 
 export type RouteCardOut = {

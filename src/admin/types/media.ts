@@ -15,8 +15,10 @@ export interface MediaSizes {
 
 export interface MediaDoc {
   id: number;
+  title?: string | null;
   alt: string;
   caption?: string | null;
+  description?: string | null;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;

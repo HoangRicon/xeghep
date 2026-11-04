@@ -134,6 +134,12 @@ export const Media: CollectionConfig = {
   },
   fields: [
     {
+      name: "title",
+      type: "text",
+      label: "Tiêu đề ảnh",
+      admin: { description: "Tên mô tả ngắn gọn cho ảnh — dùng cho SEO và quản lý." },
+    },
+    {
       name: "alt",
       type: "text",
       label: "Alt text",
@@ -148,7 +154,13 @@ export const Media: CollectionConfig = {
       name: "caption",
       type: "text",
       label: "Chú thích ảnh",
-      admin: { description: "Để trống nếu không cần chú thích." },
+      admin: { description: "Hiển thị dưới ảnh trên trang web. Để trống nếu không cần." },
+    },
+    {
+      name: "description",
+      type: "textarea",
+      label: "Mô tả chi tiết",
+      admin: { description: "Mô tả dài hơn cho ảnh — dùng cho trang chi tiết hoặc SEO." },
     },
     {
       // Override field `url` mặc định của Payload: file luôn được serve tại /media/*

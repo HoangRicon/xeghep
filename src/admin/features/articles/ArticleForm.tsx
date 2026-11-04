@@ -11,6 +11,10 @@ import {
   Wand2,
   X,
   Share2,
+  FileText,
+  Image,
+  Search,
+  Settings,
 } from 'lucide-react';
 import { Button } from '@/admin/components/ui/Button';
 import { Input } from '@/admin/components/ui/Input';
@@ -80,6 +84,9 @@ export function ArticleForm() {
   // Modals chọn ảnh
   const [isFeaturedMediaModalOpen, setIsFeaturedMediaModalOpen] = useState(false);
   const [isOgMediaModalOpen, setIsOgMediaModalOpen] = useState(false);
+
+  // Tab navigation
+  const [activeTab, setActiveTab] = useState<'content' | 'media' | 'seo' | 'settings'>('content');
 
   // Nạp dữ liệu bài viết khi ở chế độ chỉnh sửa
   const fetchArticle = useCallback(async () => {
@@ -353,6 +360,61 @@ export function ArticleForm() {
         </div>
       )}
 
+      {/* TAB NAVIGATION */}
+      <div className="flex items-center gap-1 border-b border-slate-200 pb-0">
+        <button
+          type="button"
+          onClick={() => setActiveTab('content')}
+          className={`px-4 py-2.5 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 border-b-2 -mb-px ${
+            activeTab === 'content'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          Nội dung
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('media')}
+          className={`px-4 py-2.5 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 border-b-2 -mb-px ${
+            activeTab === 'media'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Image className="w-3.5 h-3.5" />
+          Ảnh
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('seo')}
+          className={`px-4 py-2.5 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 border-b-2 -mb-px ${
+            activeTab === 'seo'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Search className="w-3.5 h-3.5" />
+          SEO
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('settings')}
+          className={`px-4 py-2.5 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 border-b-2 -mb-px ${
+            activeTab === 'settings'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Settings className="w-3.5 h-3.5" />
+          Cài đặt
+        </button>
+      </div>
+
+      {/* TAB CONTENT */}
+      {activeTab === 'content' && (
+      <div className="space-y-6">
       {/* KHỐI 1: THÔNG TIN CƠ BẢN */}
       <Card className="p-6 border-slate-200 bg-white shadow-sm space-y-5">
         <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 pb-3">
@@ -568,7 +630,160 @@ export function ArticleForm() {
           minHeight="350px"
         />
       </Card>
+      </div>
+      )}
 
+      {activeTab === 'media' && (
+      <div className="space-y-6">
+      {/* KHỐI 2: ẢNH ĐẠI DIỆN */}
+      <Card className="p-6 border-slate-200 bg-white shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Ảnh đại diện bài viết (Featured Image) <span className="text-red-500 ml-0.5">*</span>
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Ảnh hiển thị ở đầu bài viết và trên danh sách thẻ bài viết.
+            </p>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFeaturedMediaModalOpen(true)}
+            data-testid="select-featured-image-btn"
+            className="cursor-pointer"
+          >
+            <ImageIcon className="w-4 h-4 mr-1.5 text-blue-600" />
+            <span>{form.featuredImage ? 'Đổi ảnh đại diện' : 'Chọn ảnh từ thư viện'}</span>
+          </Button>
+        </div>
+
+        {form.featuredImage ? (
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <img
+                src={form.featuredImage.url || ''}
+                alt={form.featuredImage.alt || 'Ảnh đại diện bài viết'}
+                className="w-24 h-24 object-cover rounded-xl border border-slate-200 shadow-sm"
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-800 truncate">
+                  {form.featuredImage.filename}
+                </p>
+                <p className="text-[11px] text-slate-500">
+                  {form.featuredImage.width} × {form.featuredImage.height} px
+                </p>
+                {form.featuredImage.alt && (
+                  <p className="text-[11px] text-slate-600 mt-1 line-clamp-2">
+                    Alt: {form.featuredImage.alt}
+                  </p>
+                )}
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setForm((prev) => ({ ...prev, featuredImage: null }))}
+              className="text-xs text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-auto cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsFeaturedMediaModalOpen(true)}
+            className="border-2 border-dashed border-slate-200 hover:border-slate-300 rounded-2xl p-8 text-center cursor-pointer transition bg-slate-50/50 hover:bg-slate-50 flex flex-col items-center justify-center gap-2"
+          >
+            <ImageIcon className="w-8 h-8 text-slate-400" />
+            <span className="text-xs text-slate-600 font-medium">Nhấp để chọn ảnh đại diện</span>
+            <span className="text-[10px] text-slate-500">Khuyến nghị: 1200×630px hoặc tỉ lệ 16:9</span>
+          </button>
+        )}
+        {formErrors.featuredImage && (
+          <p className="text-xs text-rose-600 flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" />
+            {formErrors.featuredImage}
+          </p>
+        )}
+      </Card>
+
+      {/* OG Image */}
+      <Card className="p-6 border-slate-200 bg-white shadow-sm space-y-4">
+        <div>
+          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+            <Share2 className="w-3.5 h-3.5" />
+            Ảnh chia sẻ Mạng xã hội (OG Image)
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Ảnh hiển thị khi chia sẻ link trên Facebook, Zalo. Nếu không chọn, sẽ dùng ảnh đại diện bài viết.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {form.seo.ogImage ? (
+            <img
+              src={form.seo.ogImage.url || ''}
+              alt={form.seo.ogImage.alt || 'OG Image'}
+              className="w-16 h-16 object-cover rounded-lg border border-slate-200"
+            />
+          ) : form.featuredImage ? (
+            <img
+              src={form.featuredImage.url || ''}
+              alt="Ảnh đại diện (fallback)"
+              className="w-16 h-16 object-cover rounded-lg border border-slate-200 opacity-60"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+              <Share2 className="w-5 h-5" />
+            </div>
+          )}
+          <div className="flex-1">
+            <span className="text-xs font-medium text-slate-700 block">
+              {form.seo.ogImage
+                ? `Ảnh riêng: ${form.seo.ogImage.filename}`
+                : form.featuredImage
+                  ? 'Dùng ảnh đại diện bài viết'
+                  : 'Chưa có ảnh'}
+            </span>
+            <span className="text-[10px] text-slate-500">
+              Kích thước khuyến nghị: 1200×630px
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {form.seo.ogImage && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() =>
+                  setForm((prev) => ({ ...prev, seo: { ...prev.seo, ogImage: null } }))
+                }
+                className="text-xs text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-auto cursor-pointer"
+              >
+                Gỡ
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsOgMediaModalOpen(true)}
+              className="text-xs cursor-pointer"
+            >
+              {form.seo.ogImage ? 'Đổi ảnh' : 'Chọn ảnh'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+      </div>
+      )}
+
+      {activeTab === 'seo' && (
+      <div className="space-y-6">
       {/* KHỐI 4: CẤU HÌNH SEO & XEM TRƯỚC */}
       <div className="space-y-4">
         <Card className="p-6 border-slate-200 bg-white shadow-sm space-y-4">
@@ -593,30 +808,11 @@ export function ArticleForm() {
               />
             </div>
 
-            {/* Checkbox Append Brand */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="article-append-brand"
-                checked={form.seo.appendBrand}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    seo: { ...prev.seo, appendBrand: e.target.checked },
-                  }))
-                }
-                className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500 cursor-pointer"
-              />
-              <label htmlFor="article-append-brand" className="text-xs text-slate-700 cursor-pointer">
-                Tự động thêm hậu tố thương hiệu <span className="font-semibold text-slate-900">" | Xe Ghép Liên Tỉnh"</span> vào cuối tiêu đề SEO.
-              </label>
-            </div>
-
             {/* Meta Description */}
             <div>
               <Textarea
-                label="Mô tả SEO (Meta Description - Tối ưu 120–160 ký tự)"
-                placeholder={form.excerpt || 'Để trống: tự động lấy theo phần tóm tắt ngắn (excerpt)'}
+                label="Mô tả SEO (Meta Description - Tối ưu 150–160 ký tự)"
+                placeholder={form.excerpt || 'Để trống: tự động lấy theo tóm tắt bài viết'}
                 value={form.seo.metaDescription}
                 onChange={(e) =>
                   setForm((prev) => ({
@@ -624,78 +820,9 @@ export function ArticleForm() {
                     seo: { ...prev.seo, metaDescription: e.target.value },
                   }))
                 }
-                rows={2}
-                data-testid="seo-desc-input"
+                rows={3}
+                data-testid="seo-description-input"
               />
-            </div>
-
-            {/* OG Image */}
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div>
-                <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-                  <Share2 className="w-3.5 h-3.5" />
-                  Ảnh chia sẻ Mạng xã hội (OG Image)
-                </p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  Ảnh hiển thị khi chia sẻ link trên Facebook, Zalo. Nếu không chọn, sẽ dùng ảnh đại diện bài viết.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {form.seo.ogImage ? (
-                  <img
-                    src={form.seo.ogImage.url || ''}
-                    alt={form.seo.ogImage.alt || 'OG Image'}
-                    className="w-16 h-16 object-cover rounded-lg border border-slate-200"
-                  />
-                ) : form.featuredImage ? (
-                  <img
-                    src={form.featuredImage.url || ''}
-                    alt="Ảnh đại diện (fallback)"
-                    className="w-16 h-16 object-cover rounded-lg border border-slate-200 opacity-60"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
-                    <Share2 className="w-5 h-5" />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <span className="text-xs font-medium text-slate-700 block">
-                    {form.seo.ogImage
-                      ? `Ảnh riêng: ${form.seo.ogImage.filename}`
-                      : form.featuredImage
-                        ? 'Dùng ảnh đại diện bài viết'
-                        : 'Chưa có ảnh'}
-                  </span>
-                  <span className="text-[10px] text-slate-500">
-                    Kích thước khuyến nghị: 1200×630px
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {form.seo.ogImage && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        setForm((prev) => ({ ...prev, seo: { ...prev.seo, ogImage: null } }))
-                      }
-                      className="text-xs text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-auto cursor-pointer"
-                    >
-                      Gỡ
-                    </Button>
-                  )}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsOgMediaModalOpen(true)}
-                    className="text-xs cursor-pointer"
-                  >
-                    {form.seo.ogImage ? 'Đổi ảnh' : 'Chọn ảnh'}
-                  </Button>
-                </div>
-              </div>
             </div>
 
             {/* Checkbox Noindex */}
@@ -729,6 +856,27 @@ export function ArticleForm() {
           ogImage={ogImgUrl || undefined}
         />
       </div>
+      </div>
+      )}
+
+      {activeTab === 'settings' && (
+      <div className="space-y-6">
+        <Card className="p-6 border-slate-200 bg-white shadow-sm space-y-4">
+          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100 pb-3">
+            Cài đặt bài viết
+          </h3>
+          <p className="text-xs text-slate-500">
+            Trạng thái: <span className="font-medium text-slate-700">{form.status}</span>
+          </p>
+          <p className="text-xs text-slate-500">
+            Tác giả: <span className="font-medium text-slate-700">{form.author || 'Chưa đặt'}</span>
+          </p>
+          <p className="text-xs text-slate-500">
+            Danh mục: <span className="font-medium text-slate-700">{form.category || 'Chưa chọn'}</span>
+          </p>
+        </Card>
+      </div>
+      )}
 
       {/* Thanh nút bấm cuối trang */}
       <div className="flex items-center justify-between pt-4 border-t border-slate-200">
