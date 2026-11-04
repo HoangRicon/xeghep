@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   HelpCircle,
   Car,
+  Info,
 } from "lucide-react";
 import { Card } from "@/admin/components/ui/Card";
 import { SITE_DOMAIN } from "@/lib/seo";
@@ -161,17 +162,21 @@ export function SeoPreview({
 
   return (
     <Card className="p-5 space-y-5" data-testid="seo-preview-card">
-      {/* Header và Tab Switcher */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
         <div className="flex items-center gap-2">
           <Globe className="w-5 h-5 text-blue-600" />
-          <h3 className="text-sm font-semibold text-slate-900">
-            Kiểm tra & Xem trước hiển thị SEO
-          </h3>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">
+              Kiểm tra & Xem trước SEO
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              Các trường SEO này sẽ <strong>ghi đè</strong> tiêu đề/mô tả mặc định trên trang web thật
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* SEO Score Badge */}
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg ${getScoreBg(seoAnalysis.score)} text-white`}>
             <span className="text-xs font-bold">{seoAnalysis.score}/100</span>
             <span className="text-[10px] opacity-90">{getScoreLabel(seoAnalysis.score)}</span>
@@ -189,7 +194,7 @@ export function SeoPreview({
               data-testid="tab-serp-btn"
             >
               <Globe className="w-3.5 h-3.5" />
-              Google Tìm kiếm
+              Google
             </button>
             <button
               type="button"
@@ -202,7 +207,7 @@ export function SeoPreview({
               data-testid="tab-social-btn"
             >
               <Share2 className="w-3.5 h-3.5" />
-              Mạng xã hội (OG)
+              Facebook/Zalo
             </button>
           </div>
         </div>
@@ -386,9 +391,10 @@ export function SeoPreview({
       {/* TAB NỘI DUNG: GOOGLE SERP PREVIEW */}
       {activeTab === "serp" ? (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-400">
-            Mô phỏng hiển thị trên Google SERP (Desktop & Mobile):
-          </p>
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+            <Info className="w-3.5 h-3.5" />
+            <span>Hiển thị trên kết quả tìm kiếm Google (desktop & mobile)</span>
+          </div>
 
           {/* Khung mô phỏng Google Search Card */}
           <div
@@ -430,9 +436,10 @@ export function SeoPreview({
       ) : (
         /* TAB NỘI DUNG: SOCIAL / OPEN GRAPH PREVIEW */
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-500">
-            Mô phỏng hiển thị khi chia sẻ liên kết trên Facebook / Zalo:
-          </p>
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+            <Info className="w-3.5 h-3.5" />
+            <span>Hiển thị khi chia sẻ link trên Facebook, Zalo, Messenger</span>
+          </div>
 
           <div
             className="rounded-2xl overflow-hidden bg-white border border-slate-200 max-w-lg shadow-md text-left"
@@ -449,9 +456,8 @@ export function SeoPreview({
               ) : (
                 <div className="flex flex-col items-center justify-center text-slate-400 p-4 text-center">
                   <Share2 className="w-8 h-8 mb-2" />
-                  <span className="text-xs">
-                    Chưa cấu hình ảnh đại diện (ogImage)
-                  </span>
+                  <span className="text-xs">Chưa có ảnh OG</span>
+                  <span className="text-[10px] mt-1">Sẽ dùng ảnh mặc định của website</span>
                 </div>
               )}
             </div>

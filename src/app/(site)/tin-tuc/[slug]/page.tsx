@@ -54,15 +54,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!article) return {};
 
+  const seo = "seo" in article ? article.seo : null;
+  const ogImageUrl = seo?.ogImage?.url || article.image;
+
   return constructMetadata({
-    title: article.title,
-    description: article.excerpt,
+    title: seo?.metaTitle || article.title,
+    description: seo?.metaDescription || article.excerpt,
     path: `/tin-tuc/${article.slug}`,
     type: "article",
     publishedTime: article.publishedAt,
     modifiedTime: article.updatedAt,
     author: article.author,
-    image: article.image,
+    image: ogImageUrl,
+    noindex: seo?.noindex || false,
   });
 }
 

@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   Wand2,
   X,
+  Share2,
 } from 'lucide-react';
 import { Button } from '@/admin/components/ui/Button';
 import { Input } from '@/admin/components/ui/Input';
@@ -629,38 +630,71 @@ export function ArticleForm() {
             </div>
 
             {/* OG Image */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <div className="text-xs">
-                <p className="font-semibold text-slate-800">Ảnh chia sẻ Mạng xã hội (OG Image)</p>
-                <p className="text-[11px] text-slate-500">
-                  {form.seo.ogImage
-                    ? `Đã chọn: ${form.seo.ogImage.filename}`
-                    : 'Mặc định: Sử dụng ảnh đại diện của bài viết'}
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                  <Share2 className="w-3.5 h-3.5" />
+                  Ảnh chia sẻ Mạng xã hội (OG Image)
+                </p>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Ảnh hiển thị khi chia sẻ link trên Facebook, Zalo. Nếu không chọn, sẽ dùng ảnh đại diện bài viết.
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                {form.seo.ogImage && (
+
+              <div className="flex items-center gap-3">
+                {form.seo.ogImage ? (
+                  <img
+                    src={form.seo.ogImage.url || ''}
+                    alt={form.seo.ogImage.alt || 'OG Image'}
+                    className="w-16 h-16 object-cover rounded-lg border border-slate-200"
+                  />
+                ) : form.featuredImage ? (
+                  <img
+                    src={form.featuredImage.url || ''}
+                    alt="Ảnh đại diện (fallback)"
+                    className="w-16 h-16 object-cover rounded-lg border border-slate-200 opacity-60"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                    <Share2 className="w-5 h-5" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-slate-700 block">
+                    {form.seo.ogImage
+                      ? `Ảnh riêng: ${form.seo.ogImage.filename}`
+                      : form.featuredImage
+                        ? 'Dùng ảnh đại diện bài viết'
+                        : 'Chưa có ảnh'}
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    Kích thước khuyến nghị: 1200×630px
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {form.seo.ogImage && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setForm((prev) => ({ ...prev, seo: { ...prev.seo, ogImage: null } }))
+                      }
+                      className="text-xs text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-auto cursor-pointer"
+                    >
+                      Gỡ
+                    </Button>
+                  )}
                   <Button
                     type="button"
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
-                    onClick={() =>
-                      setForm((prev) => ({ ...prev, seo: { ...prev.seo, ogImage: null } }))
-                    }
-                    className="text-xs text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-auto cursor-pointer"
+                    onClick={() => setIsOgMediaModalOpen(true)}
+                    className="text-xs cursor-pointer"
                   >
-                    Gỡ
+                    {form.seo.ogImage ? 'Đổi ảnh' : 'Chọn ảnh'}
                   </Button>
-                )}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsOgMediaModalOpen(true)}
-                  className="text-xs cursor-pointer"
-                >
-                  {form.seo.ogImage ? 'Đổi ảnh OG' : 'Chọn ảnh riêng'}
-                </Button>
+                </div>
               </div>
             </div>
 

@@ -48,11 +48,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const route = await getRoute(slug);
+    const seo = route.seo;
+
+    const defaultTitle = `Xe Ghép ${route.name} - Giá Từ ${route.priceShare1Text}`;
+    const defaultDescription = `Dịch vụ xe tiện chuyến và xe ghép ${route.name} đón trả tận nhà. Giá ghép chỉ từ ${route.priceShare1Text}, bao xe riêng chỉ từ ${route.priceCharter4to5Text}. Xe đời mới, phục vụ 24/7.`;
 
     return constructMetadata({
-      title: `Xe Ghép ${route.name} - Giá Từ ${route.priceShare1Text}`,
-      description: `Dịch vụ xe tiện chuyến và xe ghép ${route.name} đón trả tận nhà. Giá ghép chỉ từ ${route.priceShare1Text}, bao xe riêng chỉ từ ${route.priceCharter4to5Text}. Xe đời mới, phục vụ 24/7.`,
+      title: seo?.metaTitle || defaultTitle,
+      description: seo?.metaDescription || defaultDescription,
       path: `/tuyen-lien-tinh/${route.slug}`,
+      image: seo?.ogImage?.url || route.imageUrl,
+      noindex: seo?.noindex || false,
     });
   } catch (error) {
     if (isNotFoundError(error)) return {};
