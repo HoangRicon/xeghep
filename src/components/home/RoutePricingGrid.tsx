@@ -40,8 +40,8 @@ export function RoutePricingCard({
             <Clock className="w-3 h-3 flex-shrink-0 text-amber-300" />
             <span className="truncate">{route.duration}</span>
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-bold text-white shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-700 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-bold text-white shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             <span>Chạy 24/7</span>
           </span>
         </div>

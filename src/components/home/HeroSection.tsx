@@ -22,7 +22,7 @@ export function HeroSection({ companyInfo = COMPANY_INFO }: HeroSectionProps) {
         priority
         fetchPriority="high"
         sizes="100vw"
-        quality={85}
+        quality={80}
         className="block h-auto w-full"
       />
     </section>
