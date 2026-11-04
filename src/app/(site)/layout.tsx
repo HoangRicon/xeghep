@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
+import dynamic from "next/dynamic";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingContact } from "@/components/layout/FloatingContact";
-import { BookingActivityToast } from "@/components/layout/BookingActivityToast";
-import { BookingSupportPopup } from "@/components/layout/BookingSupportPopup";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildGlobalBusinessSchema } from "@/lib/schema";
 import {
@@ -16,6 +16,20 @@ import {
 import { getRoutes, getCompanySettings, getCustomCode } from "@/lib/api";
 import { buildHeadInjectionScript } from "@/lib/custom-code";
 import { buildTrackingScripts } from "@/lib/tracking-scripts";
+
+// Lazy load non-critical components to reduce initial bundle
+const BookingActivityToast = dynamic(
+  () =>
+    import("@/components/layout/BookingActivityToast").then(
+      (mod) => mod.BookingActivityToast
+    )
+);
+const BookingSupportPopup = dynamic(
+  () =>
+    import("@/components/layout/BookingSupportPopup").then(
+      (mod) => mod.BookingSupportPopup
+    )
+);
 
 // Đồng bộ lại nội dung Payload/Postgres định kỳ mà không cần build lại toàn bộ site.
 export const revalidate = 60;
@@ -112,8 +126,9 @@ export default async function RootLayout({
         {/* AutoAds widget → chuyển vào CMS Custom Code > Head */}
 
         {customCode.headCode.trim() && (
-          <script
+          <Script
             id="custom-code-head-injection"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: buildHeadInjectionScript(customCode.headCode),
             }}
