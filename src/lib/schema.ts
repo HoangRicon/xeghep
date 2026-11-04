@@ -91,17 +91,25 @@ export function buildGlobalBusinessSchema(settings?: CompanySettingsData) {
         ],
       },
       {
-        "@type": "TaxiService",
-        "@id": `${siteDomain}/#taxiservice`,
+        "@type": "LocalBusiness",
+        "@id": `${siteDomain}/#localbusiness`,
         name: `Dịch Vụ ${orgName}`,
-        serviceType,
-        provider: {
-          "@id": `${siteDomain}/#organization`,
+        image: logoUrl,
+        url: siteDomain,
+        telephone,
+        priceRange,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Hải Phòng",
+          addressRegion: "Hải Phòng",
+          addressCountry: "VN",
         },
         areaServed,
         hoursAvailable: "Mo-Su 00:00-24:00",
-        telephone,
-        priceRange,
+        provider: {
+          "@id": `${siteDomain}/#organization`,
+        },
+        serviceType,
       },
       {
         "@type": "WebSite",
