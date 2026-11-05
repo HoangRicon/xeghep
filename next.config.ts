@@ -111,7 +111,17 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://api.xeghep24h.vn;",
+            // GTM tải được chưa đủ: GA/Ads còn cần các endpoint collect/conversion.
+            // https://developers.google.com/tag-platform/security/guides/csp
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://tagmanager.google.com https://www.google-analytics.com https://www.googleadservices.com https://www.google.com https://www.gstatic.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com",
+              "img-src 'self' data: https:",
+              "style-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com https://fonts.googleapis.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://www.googleadservices.com https://*.g.doubleclick.net https://ad.doubleclick.net https://pagead2.googlesyndication.com https://api.xeghep24h.vn",
+              "frame-src 'self' https://www.googletagmanager.com",
+            ].join("; ") + ";",
           },
         ],
       },
