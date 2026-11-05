@@ -250,12 +250,13 @@ export const CompanySettings: GlobalConfig = {
       ],
     },
     {
+      // Giữ schema cũ để không xóa cột/dữ liệu khi đồng bộ DB.
+      // Website chỉ dùng custom_code; nhóm này không còn được đọc để chèn mã.
       name: "tracking",
       label: "Mã theo dõi & Chuyển đổi",
       type: "group",
       admin: {
-        description:
-          "Quản lý tất cả mã theo dõi (GTM, Google Ads, Facebook Pixel...). Bật dịch vụ cần dùng và điền ID — hệ thống tự động chèn code đúng chuẩn vào website.",
+        hidden: true,
       },
       fields: [
         {

@@ -51,24 +51,6 @@ export interface CompanyTestimonial {
   id?: string | null;
 }
 
-export interface CompanyTracking {
-  googleTagManager?: {
-    enabled?: boolean | null;
-    containerId?: string | null;
-  };
-  googleAds?: {
-    enabled?: boolean | null;
-    conversionId?: string | null;
-    conversionLabel?: string | null;
-  };
-  facebookPixel?: {
-    enabled?: boolean | null;
-    pixelId?: string | null;
-  };
-  customHeadScripts?: string | null;
-  customBodyScripts?: string | null;
-}
-
 export interface CompanySettings {
   id?: number;
   identity: {
@@ -117,7 +99,6 @@ export interface CompanySettings {
   commitments?: CompanyCommitment[] | null;
   paymentMethods?: CompanyPaymentMethod[] | null;
   testimonials?: CompanyTestimonial[] | null;
-  tracking?: CompanyTracking;
   hotlineHref?: string | null;
   zaloHref?: string | null;
   smsHref?: string | null;

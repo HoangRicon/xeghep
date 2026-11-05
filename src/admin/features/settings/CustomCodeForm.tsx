@@ -20,6 +20,7 @@ import { apiClient, getApiErrorMessage } from "@/admin/lib/api-client";
 import type { CustomCodeSettings } from "@/admin/types/settings";
 
 type CodeEditorProps = {
+  id: string;
   label: string;
   hint: string;
   value: string;
@@ -27,17 +28,18 @@ type CodeEditorProps = {
   placeholder: string;
 };
 
-function CodeEditor({ label, hint, value, onChange, placeholder }: CodeEditorProps) {
+function CodeEditor({ id, label, hint, value, onChange, placeholder }: CodeEditorProps) {
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+        <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-slate-700">
           {label}
         </label>
         <span className="text-[11px] text-slate-400">{value.length} ký tự</span>
       </div>
       <p className="text-xs text-slate-500 leading-relaxed">{hint}</p>
       <textarea
+        id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -165,14 +167,16 @@ export function CustomCodeForm() {
           </div>
 
           <CodeEditor
+            id="custom-code-head"
             label="1. Head — chèn trong <head>"
-            hint="Dùng cho Google Analytics, meta xác minh quyền sở hữu, CSS toàn site hoặc các thẻ cần tải trước khi trang hiển thị."
+            hint="Dán mã HTML gốc từ Google Tag Manager, Google Analytics hoặc mã xác minh. Giữ nguyên cặp thẻ <script>...</script>; không dán mã React/JSX."
             value={headCode}
             onChange={setHeadCode}
             placeholder={'<meta name="google-site-verification" content="..." />\n<script>/* ... */</script>'}
           />
 
           <CodeEditor
+            id="custom-code-body-start"
             label="2. Body start — ngay sau <body>"
             hint="Dùng cho Google Tag Manager (noscript), chat widget hoặc script cần chạy sớm trước nội dung trang."
             value={bodyStartCode}
@@ -181,6 +185,7 @@ export function CustomCodeForm() {
           />
 
           <CodeEditor
+            id="custom-code-body-end"
             label="3. Footer — trước </body>"
             hint="Dùng cho Facebook Pixel, TikTok Pixel, mã theo dõi chuyển đổi hoặc script chạy cuối trang."
             value={bodyEndCode}

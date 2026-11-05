@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CompanySettingsForm } from '@/admin/features/settings/CompanySettingsForm';
+import { CustomCodeForm } from '@/admin/features/settings/CustomCodeForm';
 import { PricingSettingsForm } from '@/admin/features/settings/PricingSettingsForm';
 import { SettingsPage } from '@/admin/features/settings/SettingsPage';
 import { AirportPricingTable } from '@/admin/features/pricing/AirportPricingTable';
@@ -102,6 +103,10 @@ describe('Settings & Pricing Module (Task T118)', () => {
       expect(screen.getByDisplayValue('123 Đường Láng, Đống Đa, Hà Nội')).toBeDefined();
       expect(screen.getByDisplayValue('0109999999')).toBeDefined();
       expect(screen.getByDisplayValue('XE GHÉP THEO YÊU CẦU')).toBeDefined();
+      expect(screen.queryByText('Mã theo dõi & Chuyển đổi')).toBeNull();
+      expect(screen.queryByLabelText('Bật Google Tag Manager')).toBeNull();
+      expect(screen.queryByLabelText('Bật Google Ads Tracking')).toBeNull();
+      expect(screen.queryByLabelText('Bật Facebook Pixel')).toBeNull();
     });
 
     it('cho phép thêm cam kết mới và lưu thành công qua POST /api/globals/company_settings', async () => {
@@ -141,6 +146,40 @@ describe('Settings & Pricing Module (Task T118)', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Cập nhật thông tin doanh nghiệp thành công/i)).toBeDefined();
+      });
+      expect(vi.mocked(apiClient.post).mock.calls[0][1]).not.toHaveProperty('tracking');
+    });
+  });
+
+  describe('CustomCodeForm Component', () => {
+    it('nạp và lưu mã HTML ở Head/Body/Footer nguyên văn qua custom_code', async () => {
+      const code = {
+        headCode: '<script>window.dataLayer = window.dataLayer || [];</script>',
+        bodyStartCode: '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TEST123" height="0" width="0"></iframe></noscript>',
+        bodyEndCode: '<script>/* footer */</script>',
+      };
+      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: code });
+      vi.mocked(apiClient.post).mockResolvedValueOnce({ data: code });
+      render(<CustomCodeForm />);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('1. Head — chèn trong <head>')).toBeDefined();
+      });
+      expect(apiClient.get).toHaveBeenCalledWith('/globals/custom_code');
+      expect(screen.getByDisplayValue(code.bodyStartCode)).toBeDefined();
+      expect(screen.getByDisplayValue(code.bodyEndCode)).toBeDefined();
+      const updatedHead = '<script src="https://www.googletagmanager.com/gtm.js?id=GTM-TEST123" async></script>';
+      fireEvent.change(screen.getByLabelText('1. Head — chèn trong <head>'), {
+        target: { value: updatedHead },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Lưu Custom Code' }));
+
+      await waitFor(() => {
+        expect(apiClient.post).toHaveBeenCalledWith('/globals/custom_code', {
+          ...code,
+          headCode: updatedHead,
+        });
+        expect(screen.getByText(/Đã lưu Custom Code/)).toBeDefined();
       });
     });
   });

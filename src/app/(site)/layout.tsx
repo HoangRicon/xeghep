@@ -15,7 +15,6 @@ import {
 } from "@/lib/seo";
 import { getRoutes, getCompanySettings, getCustomCode } from "@/lib/api";
 import { buildHeadInjectionScript } from "@/lib/custom-code";
-import { buildTrackingScripts } from "@/lib/tracking-scripts";
 
 // Lazy load non-critical components to reduce initial bundle
 const BookingActivityToast = dynamic(
@@ -106,30 +105,15 @@ export default async function RootLayout({
     getCustomCode(),
   ]);
   const globalSchema = buildGlobalBusinessSchema(companySettings);
-  const tracking = buildTrackingScripts(companySettings.info.tracking);
 
   return (
     <html lang="vi" className={fontSans.variable}>
       <head>
         <meta charSet="UTF-8" />
-        
-        {/* Tracking scripts từ admin */}
-        {tracking.headExternalScripts.map((src, i) => (
-          <script key={`tracking-ext-${i}`} src={src} async />
-        ))}
-        {tracking.headInlineScripts.map((js, i) => (
-          <script
-            key={`tracking-inline-${i}`}
-            dangerouslySetInnerHTML={{ __html: js }}
-          />
-        ))}
-
-        {/* AutoAds widget → chuyển vào CMS Custom Code > Head */}
-
         {customCode.headCode.trim() && (
           <Script
             id="custom-code-head-injection"
-            strategy="lazyOnload"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: buildHeadInjectionScript(customCode.headCode),
             }}
@@ -144,25 +128,13 @@ export default async function RootLayout({
             dangerouslySetInnerHTML={{ __html: customCode.bodyStartCode }}
           />
         )}
-        {/* Tracking body scripts (GTM noscript, etc.) */}
-        {tracking.bodyScripts.map((script, i) => (
-          <div
-            key={`tracking-body-${i}`}
-            data-tracking="body"
-            suppressHydrationWarning
-            dangerouslySetInnerHTML={{ __html: script }}
-          />
-        ))}
         <JsonLd data={globalSchema} />
         <Header routes={routes} companyInfo={companySettings.info} />
         <main id="main-content" className="flex-grow">
           {children}
         </main>
         <Footer companyInfo={companySettings.info} />
-        <FloatingContact
-          companyInfo={companySettings.info}
-          callConversionSnippet={tracking.callConversionSnippet}
-        />
+        <FloatingContact companyInfo={companySettings.info} />
         <BookingActivityToast />
         <BookingSupportPopup companyInfo={companySettings.info} />
         {customCode.bodyEndCode.trim() && (

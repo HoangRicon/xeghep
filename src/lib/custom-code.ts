@@ -1,5 +1,5 @@
 /**
- * Sinh đoạn script chạy ngay khi trình duyệt parse <head> để chèn mã tùy chỉnh
+ * Sinh đoạn script để chèn mã HTML từ ô Custom Code > Head
  * (meta/link/style/script) giống WPCode. Script trong template không tự chạy
  * nên phải tạo lại thẻ <script> trước khi gắn vào document.head.
  */
